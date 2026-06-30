@@ -640,7 +640,7 @@
             <h2>学習記録</h2>
             <p class="lead">記録はこのブラウザの localStorage に保存します。外部送信やCSV出力はありません。</p>
           </div>
-          <button class="danger" id="resetData">記録をリセット</button>
+          <button class="danger" id="resetData">進捗をリセット</button>
         </div>
 
         <div class="mypage-grid">
@@ -1511,7 +1511,7 @@
             "stage": "limiting",
             "category": "過不足",
             "equation": "Zn + H2SO4 → ZnSO4 + H2",
-            "prompt": "前問の条件で発生するH2は何L？ 標準状態",
+            "prompt": "Zn26gを1.0mol/L希硫酸300mLに加えた。発生するH2は標準状態で何L？ Zn=65",
             "choices": [
                   "6.72 L",
                   "8.96 L",
@@ -1519,7 +1519,7 @@
                   "11.2 L"
             ],
             "answer": "6.72 L",
-            "note": "限量試薬H2SO4が0.30molなのでH2も0.30mol。体積は6.72L。",
+            "note": "Znは26÷65=0.40mol、H2SO4は1.0×0.300=0.30mol。限量試薬H2SO4を基準にするとH2は0.30mol、体積は6.72L。",
             "steps": [
                   "式の係数を確認する",
                   "基準の物質をmolに直す",
@@ -1852,12 +1852,27 @@
     $("goPractice").addEventListener("click", () => setPage("practice"));
 
     $("resetData").addEventListener("click", () => {
-      if (!confirm("このブラウザに保存した学習記録をリセットしますか？")) return;
+      const ok = confirm("これまでの進捗・バッジ・クリア記録をリセットしますか？");
+      if (!ok) return;
+
       localStorage.removeItem(storageKey);
-      state = loadState();
+      state = {
+        earnedBadges: [],
+        todayBadges: [],
+        cleared: [],
+        attempts: {},
+        recent: [],
+        selectedStage: "balance",
+        lastStudyDate: todayKey()
+      };
       selectedStage = "balance";
       currentProblem = null;
+      answered = false;
+      saveState();
       render();
+      setPage("practice");
+      $("answerNote").textContent = "進捗をリセットしました。もう一度はじめよう！";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
     render();
