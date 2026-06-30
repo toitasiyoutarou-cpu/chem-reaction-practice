@@ -512,6 +512,29 @@
       line-height: 1.7;
     }
 
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: var(--green);
+      color: white;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+      transition: .22s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     .hidden { display: none !important; }
 
     @media (max-width: 860px) {
@@ -695,6 +718,8 @@
       </section>
     </main>
   </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
     const storageKey = "chem-reaction-stoichiometry-v1";
@@ -1511,7 +1536,7 @@
             "stage": "limiting",
             "category": "過不足",
             "equation": "Zn + H2SO4 → ZnSO4 + H2",
-            "prompt": "Zn26gを1.0mol/L希硫酸300mLに加えた。発生するH2は標準状態で何L？ Zn=65",
+            "prompt": "Zn26gを1.0mol/L希硫酸300mLに加えた。この反応で発生するH2は何L？ Zn=65, 標準状態",
             "choices": [
                   "6.72 L",
                   "8.96 L",
@@ -1519,7 +1544,7 @@
                   "11.2 L"
             ],
             "answer": "6.72 L",
-            "note": "Znは26÷65=0.40mol、H2SO4は1.0×0.300=0.30mol。限量試薬H2SO4を基準にするとH2は0.30mol、体積は6.72L。",
+            "note": "Znは26÷65=0.40mol、H2SO4は1.0×0.300=0.30mol。限量試薬はH2SO4なのでH2も0.30mol、体積は6.72L。",
             "steps": [
                   "式の係数を確認する",
                   "基準の物質をmolに直す",
@@ -1541,12 +1566,8 @@
 
     const $ = (id) => document.getElementById(id);
 
-    function todayKey() {
-      return new Date().toISOString().slice(0, 10);
-    }
-
-    function loadState() {
-      const base = {
+    function freshState() {
+      return {
         earnedBadges: [],
         todayBadges: [],
         cleared: [],
@@ -1555,6 +1576,47 @@
         selectedStage: "balance",
         lastStudyDate: todayKey()
       };
+    }
+
+    function showToast(message) {
+      const toast = $("toast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast._timer);
+      showToast._timer = window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function resetProgress() {
+      const ok = confirm("これまでの進捗・バッジ・クリア記録をリセットしますか？");
+      if (!ok) return;
+
+      localStorage.removeItem(storageKey);
+      state = freshState();
+      selectedStage = "balance";
+      currentProblem = null;
+      answered = false;
+
+      chooseProblem();
+      saveState();
+  
+    const resetButton = $("resetData");
+    if (resetButton) {
+      resetButton.addEventListener("click", resetProgress);
+    }
+
+    render();
+      setPage("practice");
+      showToast("進捗をリセットしました。もう一度はじめよう！");
+    }
+
+
+    function todayKey() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function loadState() {
+      const base = freshState();
       try {
         const saved = JSON.parse(localStorage.getItem(storageKey));
         if (!saved) return base;
@@ -1606,7 +1668,13 @@
           selectedStage = button.dataset.stage;
           chooseProblem();
           saveState();
-          render();
+      
+    const resetButton = $("resetData");
+    if (resetButton) {
+      resetButton.addEventListener("click", resetProgress);
+    }
+
+    render();
         });
       });
     }
@@ -1840,40 +1908,34 @@
       selectedStage = recommendedStage();
       chooseProblem();
       saveState();
-      render();
+  
+    const resetButton = $("resetData");
+    if (resetButton) {
+      resetButton.addEventListener("click", resetProgress);
+    }
+
+    render();
     });
 
     $("shuffleProblem").addEventListener("click", () => {
       chooseProblem();
-      render();
+  
+    const resetButton = $("resetData");
+    if (resetButton) {
+      resetButton.addEventListener("click", resetProgress);
+    }
+
+    render();
     });
 
     $("finishStudy").addEventListener("click", () => setPage("reflection"));
     $("goPractice").addEventListener("click", () => setPage("practice"));
 
-    $("resetData").addEventListener("click", () => {
-      const ok = confirm("これまでの進捗・バッジ・クリア記録をリセットしますか？");
-      if (!ok) return;
 
-      localStorage.removeItem(storageKey);
-      state = {
-        earnedBadges: [],
-        todayBadges: [],
-        cleared: [],
-        attempts: {},
-        recent: [],
-        selectedStage: "balance",
-        lastStudyDate: todayKey()
-      };
-      selectedStage = "balance";
-      currentProblem = null;
-      answered = false;
-      saveState();
-      render();
-      setPage("practice");
-      $("answerNote").textContent = "進捗をリセットしました。もう一度はじめよう！";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    const resetButton = $("resetData");
+    if (resetButton) {
+      resetButton.addEventListener("click", resetProgress);
+    }
 
     render();
   </script>
