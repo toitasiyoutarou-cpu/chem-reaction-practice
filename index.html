@@ -535,6 +535,30 @@
       transform: translateX(-50%) translateY(0);
     }
 
+
+    .stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      color: #d28b00;
+      font-weight: 900;
+      letter-spacing: .03em;
+    }
+
+    .reset-note {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--green-soft);
+      color: #0d624f;
+      font-weight: 800;
+      display: none;
+    }
+
+    .reset-note.show {
+      display: block;
+    }
+
     .hidden { display: none !important; }
 
     @media (max-width: 860px) {
@@ -570,7 +594,7 @@
         <button class="nav-btn" data-page="mypage">学習記録</button>
       </nav>
       <div class="side-box">
-        <strong id="sideLevel">到達 0%</strong>
+        <strong id="sideLevel">問題到達 0%</strong>
         <div class="progress" aria-hidden="true"><span id="sideProgress"></span></div>
         <div class="sub" id="sideNext">まずは係数をそろえる問題から。</div>
       </div>
@@ -661,9 +685,9 @@
         <div class="topbar">
           <div>
             <h2>学習記録</h2>
-            <p class="lead">記録はこのブラウザの localStorage に保存します。外部送信やCSV出力はありません。</p>
+            <p class="lead">記録はこのブラウザの localStorage に保存します。到達度はクリア問題数で計算します。</p>
           </div>
-          <button class="danger" id="resetData">進捗をリセット</button>
+          <div><button class="danger" id="resetData">進捗をリセット</button><div class="reset-note" id="resetNote">進捗をリセットしました。もう一度はじめよう！</div></div>
         </div>
 
         <div class="mypage-grid">
@@ -3357,6 +3381,21 @@
 
     const $ = (id) => document.getElementById(id);
 
+    function problemDifficulty(problem) {
+      if (problem.difficulty) return problem.difficulty;
+      const text = `${problem.stage} ${problem.category} ${problem.prompt} ${problem.equation}`;
+      if (/混合気体|合金|炭化水素の生成|発展|純度|不純物|グラフ/.test(text)) return 5;
+      if (/過不足|限量|残る|余る|濃度|沈殿量|空気中/.test(text)) return 4;
+      if (/質量|g|L|標準状態|分子数|mol\/L|気体体積/.test(text)) return 3;
+      if (/mol比|物質量比|表でmol比|基本法則/.test(text)) return 2;
+      return 1;
+    }
+
+    function starText(level) {
+      return "★".repeat(level) + "☆".repeat(5 - level);
+    }
+
+
     function freshState() {
       return {
         earnedBadges: [],
@@ -3449,7 +3488,7 @@
           <button class="stage ${stage.id === selectedStage ? "selected" : ""}" data-stage="${stage.id}">
             <span class="stage-num">${index + 1}</span>
             <span><strong>${stage.name}</strong><span>${stage.detail}</span></span>
-            <span class="chip">${count}</span>
+            <span class="chip">${count}</span><span class="chip stars">${starText(Math.round(problems.filter((problem) => problem.stage === stage.id).reduce((sum, problem) => sum + problemDifficulty(problem), 0) / Math.max(1, problems.filter((problem) => problem.stage === stage.id).length)))}</span>
           </button>
         `;
       }).join("");
@@ -3480,7 +3519,7 @@
 
     function renderProblem() {
       if (!currentProblem) chooseProblem();
-      $("problemTags").innerHTML = `<span class="chip">${stageName(currentProblem.stage)}</span><span class="chip">${currentProblem.category}</span>`;
+      $("problemTags").innerHTML = `<span class="chip">${stageName(currentProblem.stage)}</span><span class="chip">${currentProblem.category}</span><span class="chip stars">${starText(problemDifficulty(currentProblem))}</span>`;
       $("problemEquation").textContent = currentProblem.equation;
       $("problemPrompt").textContent = currentProblem.prompt;
       $("answerNote").textContent = "選択肢を選ぶと、式の立て方と計算の筋道が出ます。";
@@ -3538,6 +3577,7 @@
         equation: currentProblem.equation,
         stage: currentProblem.stage,
         category: currentProblem.category,
+        difficulty: problemDifficulty(currentProblem),
         correct,
         at: new Date().toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
       });
@@ -3637,14 +3677,14 @@
       $("recentProblems").innerHTML = state.recent.map((item) => `
         <li>
           <strong>${item.correct ? "正解" : "確認"}：${item.equation}</strong><br>
-          ${stageName(item.stage)}・${item.category} / ${item.at}
+          ${stageName(item.stage)}・${item.category} <span class="stars">${starText(item.difficulty || 1)}</span> / ${item.at}
         </li>
       `).join("");
     }
 
     function updateSide() {
       const percent = calcProgress();
-      $("sideLevel").textContent = `到達 ${percent}%`;
+      $("sideLevel").textContent = `問題到達 ${percent}%`;
       $("sideProgress").style.width = `${percent}%`;
       const next = badges.find((badge) => !state.earnedBadges.includes(badge.id));
       $("sideNext").textContent = next ? `次は「${next.label}」へ。` : "一通り到達。過不足と生成量を反復しよう。";
@@ -3662,15 +3702,17 @@
     }
 
     function calcProgress() {
-      return Math.round((state.earnedBadges.length / badges.length) * 100);
+      const total = problems.length || 1;
+      const cleared = new Set(state.cleared).size;
+      return Math.min(100, Math.round((cleared / total) * 100));
     }
 
     function levelTitle() {
       const percent = calcProgress();
-      if (percent >= 80) return "過不足・生成量まで";
-      if (percent >= 55) return "量的関係の計算";
-      if (percent >= 30) return "mol比の利用";
-      if (percent > 0) return "反応式の基礎";
+      if (percent >= 80) return "総合演習レベル";
+      if (percent >= 55) return "かなり進んだ";
+      if (percent >= 30) return "演習が進行中";
+      if (percent > 0) return "自学スタート";
       return "これから開始";
     }
 
