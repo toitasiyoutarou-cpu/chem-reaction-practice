@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>化学反応式と量的関係</title>
+  <style>
+    :root {
+      --ink: #1d2733;
+      --sub: #5f6f80;
+      --line: #d7e0e8;
+      --paper: #f6f8fb;
+      --panel: #ffffff;
+      --green: #138a72;
+      --green-soft: #e2f5ef;
+      --blue: #2d6db7;
+      --blue-soft: #e7f0fc;
+      --yellow: #c18411;
+      --yellow-soft: #fff3d8;
+      --red: #c8485f;
+      --red-soft: #ffe7ec;
+      --shadow: 0 12px 28px rgba(24, 38, 55, .10);
+      font-family: "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(120deg, rgba(45, 109, 183, .10), transparent 32%),
+        linear-gradient(300deg, rgba(19, 138, 114, .11), transparent 38%),
+        #f3f6f9;
+    }
+
+    button { font: inherit; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 18px;
+      background: rgba(255, 255, 255, .92);
+      border-right: 1px solid var(--line);
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .subject {
+      width: max-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #1d5898;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      color: var(--sub);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      min-height: 44px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      padding: 10px 12px;
+      font-weight: 700;
+    }
+
+    .nav-btn.active {
+      color: #1d5898;
+      background: var(--blue-soft);
+      border-color: #cfe0f5;
+    }
+
+    .side-box {
+      margin-top: 22px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .progress {
+      height: 12px;
+      border-radius: 999px;
+      background: #e6edf3;
+      overflow: hidden;
+      margin: 10px 0 8px;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      transition: width .25s ease;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1160px;
+      padding: 26px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 7px 0 0;
+      color: var(--sub);
+      line-height: 1.7;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 18px 20px;
+      border: 1px solid #c9dde8;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ffffff, #e9f5f1);
+    }
+
+    .hero-title {
+      margin: 0 0 6px;
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .formula-strip {
+      display: grid;
+      gap: 8px;
+      min-width: 250px;
+      font-weight: 900;
+    }
+
+    .formula-strip div {
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      text-align: center;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(300px, .7fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-inner { padding: 20px; }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .tabs {
+      display: grid;
+      gap: 9px;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      min-height: 62px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .stage.selected {
+      border-color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .stage-num {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      background: var(--blue-soft);
+      color: #1d5898;
+      font-weight: 900;
+    }
+
+    .stage strong { display: block; margin-bottom: 3px; }
+    .stage span { color: var(--sub); font-size: 13px; line-height: 1.45; }
+
+    .problem-card {
+      border-radius: 8px;
+      background: #111a24;
+      color: white;
+      padding: 22px;
+      margin-bottom: 16px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 27px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .14);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .equation {
+      margin: 0 0 12px;
+      font-size: 27px;
+      font-weight: 900;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .prompt {
+      margin: 0;
+      color: rgba(255, 255, 255, .78);
+      line-height: 1.65;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .choice {
+      min-height: 58px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      text-align: left;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .choice.correct {
+      border-color: var(--green);
+      background: var(--green-soft);
+      color: #0d624f;
+    }
+
+    .choice.wrong {
+      border-color: var(--red);
+      background: var(--red-soft);
+      color: #8b2636;
+    }
+
+    .explain {
+      min-height: 70px;
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 8px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      color: var(--sub);
+      line-height: 1.7;
+    }
+
+    .steps {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 9px;
+      align-items: start;
+      color: var(--sub);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .step b {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      aspect-ratio: 1;
+      border-radius: 999px;
+      background: var(--yellow-soft);
+      color: #865908;
+      font-size: 12px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .primary, .secondary, .danger {
+      min-height: 42px;
+      padding: 9px 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .primary { color: white; background: var(--green); }
+    .secondary { color: var(--ink); background: white; border-color: var(--line); }
+    .danger { color: #8b2636; background: var(--red-soft); border-color: #fac4cf; }
+
+    .badge-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid #dbe3ea;
+      border-radius: 999px;
+      background: #edf2f6;
+      color: #667586;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .badge.earned {
+      color: #765107;
+      border-color: #f3d187;
+      background: var(--yellow-soft);
+    }
+
+    .badge.today {
+      color: #0d624f;
+      border-color: #bfe7dc;
+      background: var(--green-soft);
+    }
+
+    .recommend {
+      padding: 14px;
+      border-left: 5px solid var(--blue);
+      border-radius: 8px;
+      background: var(--blue-soft);
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
+    .summary-card {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ffffff, #fff4db);
+    }
+
+    .summary-title {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .mypage-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .wide { grid-column: 1 / -1; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .stat b {
+      display: block;
+      font-size: 24px;
+    }
+
+    .stat span {
+      color: var(--sub);
+      font-size: 12px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .list li {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      line-height: 1.6;
+    }
+
+    .meter-line {
+      display: grid;
+      grid-template-columns: 110px 1fr 48px;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .track {
+      height: 10px;
+      background: #e7edf3;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .track span {
+      display: block;
+      height: 100%;
+      background: var(--green);
+      border-radius: inherit;
+    }
+
+    .empty {
+      padding: 16px;
+      border: 1px dashed #c7d3de;
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--sub);
+      line-height: 1.7;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      aside {
+        position: static;
+        height: auto;
+        padding: 16px;
+      }
+      nav { grid-template-columns: repeat(3, 1fr); }
+      .nav-btn { text-align: center; }
+      .side-box { display: none; }
+      main { padding: 18px; }
+      .topbar, .hero { grid-template-columns: 1fr; }
+      .layout, .mypage-grid { grid-template-columns: 1fr; }
+      .choices, .stats { grid-template-columns: 1fr; }
+      .formula-strip { min-width: 0; }
+      .equation { font-size: 23px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <div class="subject">化学基礎</div>
+        <h1>化学反応式と<br>量的関係</h1>
+        <div class="sub">反応式の係数を、mol・質量・気体体積・濃度の計算につなげる練習。</div>
+      </div>
+      <nav aria-label="画面切り替え">
+        <button class="nav-btn active" data-page="practice">問題演習</button>
+        <button class="nav-btn" data-page="reflection">振り返り</button>
+        <button class="nav-btn" data-page="mypage">学習記録</button>
+      </nav>
+      <div class="side-box">
+        <strong id="sideLevel">到達 0%</strong>
+        <div class="progress" aria-hidden="true"><span id="sideProgress"></span></div>
+        <div class="sub" id="sideNext">まずは係数をそろえる問題から。</div>
+      </div>
+    </aside>
+
+    <main>
+      <section class="page active" id="practice">
+        <div class="topbar">
+          <div>
+            <h2>問題演習</h2>
+            <p class="lead">化学反応式をつくり、係数比から量的関係を読む練習に絞っています。</p>
+          </div>
+          <button class="secondary" id="finishStudy">今日のまとめ</button>
+        </div>
+
+        <div class="hero">
+          <div>
+            <p class="hero-title">反応式の係数 = mol比</p>
+            <p class="lead">計算はまず mol に直す。次に係数比で目的の物質へ進む。この順番を固めます。</p>
+          </div>
+          <div class="formula-strip" aria-hidden="true">
+            <div>質量 ÷ モル質量 = mol</div>
+            <div>気体体積 ÷ 22.4 = mol</div>
+            <div>濃度 × 体積(L) = mol</div>
+          </div>
+        </div>
+
+        <div class="layout">
+          <div class="panel">
+            <div class="panel-inner">
+              <div class="problem-card">
+                <div class="chips" id="problemTags"></div>
+                <p class="equation" id="problemEquation"></p>
+                <p class="prompt" id="problemPrompt"></p>
+              </div>
+              <div class="choices" id="choices"></div>
+              <div class="explain" id="answerNote">選択肢を選ぶと、式の立て方と計算の筋道が出ます。</div>
+              <div class="actions">
+                <button class="primary hidden" id="nextProblem">おすすめの次へ</button>
+                <button class="secondary" id="shuffleProblem">同じ単元でもう1問</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-inner">
+              <p class="section-title">単元を選ぶ</p>
+              <div class="tabs" id="stageList"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="reflection">
+        <div class="topbar">
+          <div>
+            <h2>振り返り</h2>
+            <p class="lead">自由記述ではなく、今日できた手順と次に解くべき問題で確認します。</p>
+          </div>
+          <button class="secondary" id="goPractice">問題に戻る</button>
+        </div>
+
+        <div class="layout">
+          <div class="panel">
+            <div class="panel-inner">
+              <p class="section-title">今日できたこと</p>
+              <div class="badge-grid" id="todayBadges"></div>
+              <div id="todayEmpty" class="empty hidden">まずは1問解いてみよう。正解した手順がここに残ります。</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-inner">
+              <p class="section-title">次にやるとよい問題</p>
+              <div class="recommend" id="nextRecommend"></div>
+            </div>
+          </div>
+
+          <div class="panel wide">
+            <div class="panel-inner">
+              <div class="summary-card" id="summaryCard"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="mypage">
+        <div class="topbar">
+          <div>
+            <h2>学習記録</h2>
+            <p class="lead">記録はこのブラウザの localStorage に保存します。外部送信やCSV出力はありません。</p>
+          </div>
+          <button class="danger" id="resetData">記録をリセット</button>
+        </div>
+
+        <div class="mypage-grid">
+          <div class="panel">
+            <div class="panel-inner">
+              <p class="section-title">現在の到達</p>
+              <strong id="myLevel">反応式の基礎</strong>
+              <div class="progress" aria-hidden="true"><span id="myProgress"></span></div>
+              <p class="lead" id="myLevelText"></p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-inner">
+              <p class="section-title">演習数</p>
+              <div class="stats">
+                <div class="stat"><b id="clearCount">0</b><span>クリア</span></div>
+                <div class="stat"><b id="badgeCount">0</b><span>できた手順</span></div>
+                <div class="stat"><b id="recentCount">0</b><span>最近の問題</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel wide">
+            <div class="panel-inner">
+              <p class="section-title">できた手順</p>
+              <div class="badge-grid" id="allBadges"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-inner">
+              <p class="section-title">苦手なカテゴリ</p>
+              <div id="weakCategories"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-inner">
+              <p class="section-title">おすすめ次ステージ</p>
+              <div class="recommend" id="nextStage"></div>
+            </div>
+          </div>
+
+          <div class="panel wide">
+            <div class="panel-inner">
+              <p class="section-title">最近解いた問題</p>
+              <ul class="list" id="recentProblems"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const storageKey = "chem-reaction-stoichiometry-v1";
+
+    const badges = [
+      { id: "balance", label: "係数をそろえた" },
+      { id: "atom", label: "原子保存を確認した" },
+      { id: "molratio", label: "係数からmol比を読めた" },
+      { id: "massmol", label: "質量をmolに直せた" },
+      { id: "gasmol", label: "気体体積をmolに直せた" },
+      { id: "concmol", label: "モル濃度からmolを出せた" },
+      { id: "targetmol", label: "目的物質のmolを出せた" },
+      { id: "limiting", label: "限量試薬を判断できた" },
+      { id: "leftover", label: "余る量を求められた" },
+      { id: "yield", label: "生成量を求められた" }
+    ];
+
+    const stages = [
+      { id: "balance", name: "1. 反応式と係数", detail: "未完成の式を係数でそろえる" },
+      { id: "ratio", name: "2. 係数比とmol比", detail: "反応式の係数をmol比として読む" },
+      { id: "mass", name: "3. 質量から計算", detail: "質量→mol→係数比→答え" },
+      { id: "gas", name: "4. 気体体積から計算", detail: "22.4L/mol を使う" },
+      { id: "concentration", name: "5. モル濃度から計算", detail: "cVでmolを出す" },
+      { id: "limiting", name: "6. 過不足と生成量", detail: "限量試薬・余る量・生成量" }
+    ];
+
+    const problems = [
+      {
+        id: "b1", stage: "balance", category: "係数合わせ", equation: "Mg + HCl → MgCl2 + H2",
+        prompt: "原子の数が左右でそろう反応式はどれ？",
+        choices: ["Mg + 2HCl → MgCl2 + H2", "2Mg + HCl → MgCl2 + H2", "Mg + HCl → MgCl2 + 2H2", "Mg + 2HCl → 2MgCl2 + H2"],
+        answer: "Mg + 2HCl → MgCl2 + H2",
+        note: "Mgは1個ずつ、Clは右に2個あるので HCl を2にする。Hも2個になり H2 とそろいます。",
+        steps: ["まず金属 Mg をそろえる", "MgCl2 の Cl が2個なので HCl を2にする", "H が2個になったので H2 と一致する"],
+        earns: ["balance", "atom"]
+      },
+      {
+        id: "b2", stage: "balance", category: "燃焼", equation: "C3H8 + O2 → CO2 + H2O",
+        prompt: "プロパンの燃焼で正しい係数はどれ？",
+        choices: ["C3H8 + 5O2 → 3CO2 + 4H2O", "C3H8 + 4O2 → 3CO2 + 4H2O", "2C3H8 + 5O2 → 3CO2 + 4H2O", "C3H8 + 5O2 → CO2 + H2O"],
+        answer: "C3H8 + 5O2 → 3CO2 + 4H2O",
+        note: "Cを3、Hを8にそろえると CO2 は3、H2O は4。右辺のOは10個なので O2 は5です。",
+        steps: ["Cを見て CO2 を3にする", "Hを見て H2O を4にする", "右辺のOは10個なので O2 を5にする"],
+        earns: ["balance", "atom"]
+      },
+      {
+        id: "r1", stage: "ratio", category: "mol比", equation: "2H2 + O2 → 2H2O",
+        prompt: "H2 と H2O のmol比はどれ？",
+        choices: ["1 : 1", "2 : 1", "1 : 2", "2 : 3"],
+        answer: "1 : 1",
+        note: "係数は H2 : H2O = 2 : 2。比を簡単にすると 1 : 1 です。",
+        steps: ["反応式の係数を見る", "H2 と H2O は 2 : 2", "2で割って 1 : 1"],
+        earns: ["molratio"]
+      },
+      {
+        id: "r2", stage: "ratio", category: "mol比", equation: "CaCO3 + 2HCl → CaCl2 + H2O + CO2",
+        prompt: "CaCO3 と CO2 のmol比はどれ？",
+        choices: ["1 : 1", "1 : 2", "2 : 1", "2 : 3"],
+        answer: "1 : 1",
+        note: "CaCO3 の係数も CO2 の係数も1。炭酸カルシウム1molから二酸化炭素1molができます。",
+        steps: ["係数が書かれていない物質は1と考える", "CaCO3 : CO2 = 1 : 1", "生成するCO2のmolはCaCO3と同じ"],
+        earns: ["molratio"]
+      },
+      {
+        id: "m1", stage: "mass", category: "質量→mol→生成量", equation: "2Mg + O2 → 2MgO",
+        prompt: "Mg 12g を完全に反応させると MgO は何molできる？ Mg = 24 g/mol",
+        choices: ["0.50 mol", "1.0 mol", "0.25 mol", "2.0 mol"],
+        answer: "0.50 mol",
+        note: "Mg 12g は 12÷24 = 0.50mol。Mg と MgO の係数比は 2:2 = 1:1 なので MgO も0.50molです。",
+        steps: ["質量をmolに直す: 12÷24=0.50mol", "係数比 Mg:MgO = 2:2", "比は1:1なので MgO は0.50mol"],
+        earns: ["massmol", "molratio", "targetmol"]
+      },
+      {
+        id: "m2", stage: "mass", category: "質量→気体", equation: "CaCO3 + 2HCl → CaCl2 + H2O + CO2",
+        prompt: "CaCO3 10g から CO2 は何molできる？ CaCO3 = 100 g/mol",
+        choices: ["0.10 mol", "1.0 mol", "0.20 mol", "10 mol"],
+        answer: "0.10 mol",
+        note: "CaCO3 は 10÷100 = 0.10mol。CaCO3 と CO2 は 1:1 なので CO2 も0.10molです。",
+        steps: ["CaCO3のmolを出す: 10÷100=0.10mol", "係数比 CaCO3:CO2 = 1:1", "CO2 は0.10mol"],
+        earns: ["massmol", "molratio", "targetmol"]
+      },
+      {
+        id: "g1", stage: "gas", category: "気体体積", equation: "Mg + 2HCl → MgCl2 + H2",
+        prompt: "標準状態で H2 5.6L は何mol？",
+        choices: ["0.25 mol", "0.50 mol", "1.0 mol", "5.6 mol"],
+        answer: "0.25 mol",
+        note: "標準状態では 1mol = 22.4L。5.6÷22.4 = 0.25molです。",
+        steps: ["気体体積は22.4Lで割る", "5.6÷22.4=0.25mol", "H2 は0.25mol"],
+        earns: ["gasmol"]
+      },
+      {
+        id: "g2", stage: "gas", category: "気体体積→反応量", equation: "2H2 + O2 → 2H2O",
+        prompt: "H2 11.2L を完全に反応させるのに必要な O2 は何mol？ 標準状態",
+        choices: ["0.25 mol", "0.50 mol", "1.0 mol", "2.0 mol"],
+        answer: "0.25 mol",
+        note: "H2 11.2L は0.50mol。H2:O2 = 2:1 なので、O2 は0.50×1/2 = 0.25molです。",
+        steps: ["H2をmolに直す: 11.2÷22.4=0.50mol", "係数比 H2:O2 = 2:1", "O2 は0.50×1/2=0.25mol"],
+        earns: ["gasmol", "molratio", "targetmol"]
+      },
+      {
+        id: "c1", stage: "concentration", category: "モル濃度", equation: "HCl(aq)",
+        prompt: "1.0 mol/L の塩酸 0.20L に含まれる HCl は何mol？",
+        choices: ["0.20 mol", "1.2 mol", "5.0 mol", "0.020 mol"],
+        answer: "0.20 mol",
+        note: "物質量 = モル濃度 × 体積(L)。1.0×0.20 = 0.20molです。",
+        steps: ["体積をLで使う", "cV = 1.0×0.20", "HCl は0.20mol"],
+        earns: ["concmol"]
+      },
+      {
+        id: "c2", stage: "concentration", category: "濃度→気体", equation: "Mg + 2HCl → MgCl2 + H2",
+        prompt: "1.0 mol/L の塩酸 0.40L が十分なMgと反応すると H2 は何molできる？",
+        choices: ["0.20 mol", "0.40 mol", "0.80 mol", "1.0 mol"],
+        answer: "0.20 mol",
+        note: "HCl は1.0×0.40=0.40mol。HCl:H2 = 2:1 なので H2 は0.20molです。",
+        steps: ["HClをmolに直す: 1.0×0.40=0.40mol", "係数比 HCl:H2 = 2:1", "H2 は0.40×1/2=0.20mol"],
+        earns: ["concmol", "molratio", "targetmol"]
+      },
+      {
+        id: "l1", stage: "limiting", category: "限量試薬", equation: "Mg + 2HCl → MgCl2 + H2",
+        prompt: "Mg 1.0mol と HCl 1.5mol を反応させる。先になくなる物質はどれ？",
+        choices: ["HCl", "Mg", "どちらも同時", "MgCl2"],
+        answer: "HCl",
+        note: "Mg 1.0mol には HCl 2.0mol が必要。HCl は1.5molしかないので、HClが限量試薬です。",
+        steps: ["Mg 1.0molに必要なHClを考える", "係数比 Mg:HCl = 1:2 なので2.0mol必要", "実際は1.5molなのでHClが不足"],
+        earns: ["limiting"]
+      },
+      {
+        id: "l2", stage: "limiting", category: "余る量・生成量", equation: "Mg + 2HCl → MgCl2 + H2",
+        prompt: "Mg 1.0mol と HCl 1.5mol では、Mg は何mol余る？",
+        choices: ["0.25 mol", "0.50 mol", "0 mol", "1.5 mol"],
+        answer: "0.25 mol",
+        note: "HCl 1.5mol と反応する Mg は0.75mol。Mgは 1.0-0.75=0.25mol 余ります。",
+        steps: ["HClを基準にする", "係数比 HCl:Mg = 2:1 なので Mgは1.5×1/2=0.75mol反応", "最初のMg 1.0molから引いて0.25mol余る"],
+        earns: ["leftover", "limiting"]
+      },
+      {
+        id: "l3", stage: "limiting", category: "生成量", equation: "CaCO3 + 2HCl → CaCl2 + H2O + CO2",
+        prompt: "CaCO3 0.30mol が十分な塩酸と反応すると、CO2 は標準状態で何Lできる？",
+        choices: ["6.72 L", "3.36 L", "22.4 L", "0.30 L"],
+        answer: "6.72 L",
+        note: "CaCO3:CO2 = 1:1 なので CO2 は0.30mol。標準状態の体積は0.30×22.4=6.72Lです。",
+        steps: ["係数比 CaCO3:CO2 = 1:1", "CO2 は0.30mol", "気体体積は0.30×22.4=6.72L"],
+        earns: ["yield", "molratio", "targetmol"]
+      }
+    ];
+
+    let state = loadState();
+    let selectedStage = state.selectedStage || "balance";
+    let currentProblem = null;
+    let answered = false;
+
+    const $ = (id) => document.getElementById(id);
+
+    function todayKey() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function loadState() {
+      const base = {
+        earnedBadges: [],
+        todayBadges: [],
+        cleared: [],
+        attempts: {},
+        recent: [],
+        selectedStage: "balance",
+        lastStudyDate: todayKey()
+      };
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey));
+        if (!saved) return base;
+        const merged = { ...base, ...saved };
+        if (merged.lastStudyDate !== todayKey()) {
+          merged.todayBadges = [];
+          merged.lastStudyDate = todayKey();
+        }
+        return merged;
+      } catch {
+        return base;
+      }
+    }
+
+    function saveState() {
+      state.selectedStage = selectedStage;
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function setPage(pageId) {
+      document.querySelectorAll(".page").forEach((page) => page.classList.toggle("active", page.id === pageId));
+      document.querySelectorAll(".nav-btn").forEach((button) => button.classList.toggle("active", button.dataset.page === pageId));
+      if (pageId === "reflection") renderReflection();
+      if (pageId === "mypage") renderMyPage();
+    }
+
+    function render() {
+      renderStages();
+      renderProblem();
+      renderReflection();
+      renderMyPage();
+      updateSide();
+    }
+
+    function renderStages() {
+      $("stageList").innerHTML = stages.map((stage, index) => {
+        const count = problems.filter((problem) => problem.stage === stage.id && state.cleared.includes(problem.id)).length;
+        return `
+          <button class="stage ${stage.id === selectedStage ? "selected" : ""}" data-stage="${stage.id}">
+            <span class="stage-num">${index + 1}</span>
+            <span><strong>${stage.name}</strong><span>${stage.detail}</span></span>
+            <span class="chip">${count}</span>
+          </button>
+        `;
+      }).join("");
+
+      document.querySelectorAll("[data-stage]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedStage = button.dataset.stage;
+          chooseProblem();
+          saveState();
+          render();
+        });
+      });
+    }
+
+    function chooseProblem() {
+      const pool = problems.filter((problem) => problem.stage === selectedStage);
+      const fresh = pool.filter((problem) => !state.cleared.includes(problem.id));
+      const source = fresh.length ? fresh : pool;
+      currentProblem = source[Math.floor(Math.random() * source.length)];
+      answered = false;
+    }
+
+    function renderProblem() {
+      if (!currentProblem) chooseProblem();
+      $("problemTags").innerHTML = `<span class="chip">${stageName(currentProblem.stage)}</span><span class="chip">${currentProblem.category}</span>`;
+      $("problemEquation").textContent = currentProblem.equation;
+      $("problemPrompt").textContent = currentProblem.prompt;
+      $("answerNote").textContent = "選択肢を選ぶと、式の立て方と計算の筋道が出ます。";
+      $("nextProblem").classList.add("hidden");
+      $("choices").innerHTML = currentProblem.choices.map((choice) => `
+        <button class="choice" data-choice="${escapeAttr(choice)}">${choice}</button>
+      `).join("");
+      document.querySelectorAll("[data-choice]").forEach((button) => {
+        button.addEventListener("click", () => checkAnswer(button));
+      });
+    }
+
+    function checkAnswer(button) {
+      if (answered) return;
+      answered = true;
+      const correct = button.dataset.choice === currentProblem.answer;
+      const attempt = state.attempts[currentProblem.category] || { ok: 0, total: 0 };
+      attempt.total += 1;
+      if (correct) attempt.ok += 1;
+      state.attempts[currentProblem.category] = attempt;
+
+      document.querySelectorAll(".choice").forEach((choiceButton) => {
+        if (choiceButton.dataset.choice === currentProblem.answer) choiceButton.classList.add("correct");
+        if (choiceButton === button && !correct) choiceButton.classList.add("wrong");
+      });
+
+      if (correct) {
+        currentProblem.earns.forEach(addBadge);
+        if (!state.cleared.includes(currentProblem.id)) state.cleared.push(currentProblem.id);
+      }
+
+      $("answerNote").innerHTML = buildExplanation(correct);
+      addRecent(correct);
+      $("nextProblem").classList.remove("hidden");
+      saveState();
+      renderReflection();
+      renderMyPage();
+      updateSide();
+    }
+
+    function buildExplanation(correct) {
+      const head = correct ? "正解。 " : `答えは「${currentProblem.answer}」。 `;
+      const steps = currentProblem.steps.map((step, index) => `<div class="step"><b>${index + 1}</b><span>${step}</span></div>`).join("");
+      return `${head}${currentProblem.note}<div class="steps">${steps}</div>`;
+    }
+
+    function addBadge(id) {
+      if (!state.earnedBadges.includes(id)) state.earnedBadges.push(id);
+      if (!state.todayBadges.includes(id)) state.todayBadges.push(id);
+    }
+
+    function addRecent(correct) {
+      state.recent.unshift({
+        id: currentProblem.id,
+        equation: currentProblem.equation,
+        stage: currentProblem.stage,
+        category: currentProblem.category,
+        correct,
+        at: new Date().toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+      });
+      state.recent = state.recent.slice(0, 8);
+    }
+
+    function renderReflection() {
+      const today = badges.filter((badge) => state.todayBadges.includes(badge.id));
+      $("todayBadges").innerHTML = today.map((badge) => `<span class="badge today">${badge.label}</span>`).join("");
+      $("todayEmpty").classList.toggle("hidden", today.length > 0);
+      $("nextRecommend").innerHTML = getRecommendation();
+      $("summaryCard").innerHTML = buildSummary(today);
+    }
+
+    function buildSummary(today) {
+      if (!today.length) {
+        return `
+          <div class="summary-title">今日のまとめ</div>
+          <div class="empty">まだ今日の到達はありません。まずは「反応式と係数」から1問解いてみよう。</div>
+        `;
+      }
+      const labels = today.slice(-4).map((badge) => `<span class="badge today">${badge.label}</span>`).join("");
+      return `
+        <div class="summary-title">今日の到達：${today[today.length - 1].label}</div>
+        <div>
+          <strong>できた手順</strong>
+          <div class="badge-grid" style="margin-top:8px;">${labels}</div>
+        </div>
+        <div class="recommend"><strong>次のおすすめ</strong><br>${getNextProblemText()}</div>
+      `;
+    }
+
+    function getRecommendation() {
+      const earned = new Set(state.earnedBadges);
+      if (!earned.size) return "まずは <strong>Mg + 2HCl → MgCl2 + H2</strong> の係数合わせから。左右の原子数をそろえるところを確認しよう。";
+      if (earned.has("limiting") || earned.has("leftover")) return "過不足まで進めています。次は <strong>生成量</strong> を、molから質量または気体体積まで変換する問題へ。";
+      if (earned.has("concmol")) return "モル濃度からmolを出せています。次は <strong>過不足</strong> で、どちらの物質が先になくなるかを判断しよう。";
+      if (earned.has("gasmol")) return "気体体積をmolに直せています。次は <strong>モル濃度 cV</strong> を使う問題へ。";
+      if (earned.has("massmol")) return "質量をmolに直せています。次は <strong>気体体積 22.4L/mol</strong> を使う問題へ。";
+      if (earned.has("molratio")) return "係数からmol比を読めています。次は <strong>質量→mol→係数比</strong> の計算へ。";
+      if (earned.has("balance")) return "係数合わせができています。次は <strong>係数をmol比として読む</strong> 問題へ。";
+      return "原子保存を確認できています。次は係数比をmol比として使ってみよう。";
+    }
+
+    function getNextProblemText() {
+      const nextStageId = recommendedStage();
+      const nextProblem = problems.find((problem) => problem.stage === nextStageId) || problems[0];
+      const stage = stages.find((item) => item.id === nextStageId);
+      return `${stage.name}<br>${nextProblem.equation}<br>${nextProblem.prompt}`;
+    }
+
+    function renderMyPage() {
+      const percent = calcProgress();
+      $("myLevel").textContent = levelTitle();
+      $("myProgress").style.width = `${percent}%`;
+      $("myLevelText").textContent = levelText();
+      $("clearCount").textContent = state.cleared.length;
+      $("badgeCount").textContent = state.earnedBadges.length;
+      $("recentCount").textContent = state.recent.length;
+      $("allBadges").innerHTML = badges.map((badge) => {
+        const earned = state.earnedBadges.includes(badge.id);
+        return `<span class="badge ${earned ? "earned" : ""}">${earned ? "✓" : "○"} ${badge.label}</span>`;
+      }).join("");
+      renderWeakCategories();
+      $("nextStage").innerHTML = getRecommendation();
+      renderRecent();
+    }
+
+    function renderWeakCategories() {
+      const entries = Object.entries(state.attempts);
+      if (!entries.length) {
+        $("weakCategories").innerHTML = `<div class="empty">まだ苦手カテゴリはありません。数問解くと、正答率から練習したい単元が見えてきます。</div>`;
+        return;
+      }
+      const sorted = entries
+        .map(([category, score]) => ({ category, rate: score.ok / score.total, total: score.total }))
+        .sort((a, b) => a.rate - b.rate)
+        .slice(0, 4);
+      $("weakCategories").innerHTML = sorted.map((item) => {
+        const percent = Math.round(item.rate * 100);
+        const label = percent >= 80 ? "安定" : percent >= 50 ? "あと少し" : "復習";
+        return `
+          <div class="meter-line">
+            <strong>${item.category}</strong>
+            <div class="track"><span style="width:${percent}%"></span></div>
+            <span>${label}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderRecent() {
+      if (!state.recent.length) {
+        $("recentProblems").innerHTML = `<li>まだ問題を解いていません。演習を始めるとここに残ります。</li>`;
+        return;
+      }
+      $("recentProblems").innerHTML = state.recent.map((item) => `
+        <li>
+          <strong>${item.correct ? "正解" : "確認"}：${item.equation}</strong><br>
+          ${stageName(item.stage)}・${item.category} / ${item.at}
+        </li>
+      `).join("");
+    }
+
+    function updateSide() {
+      const percent = calcProgress();
+      $("sideLevel").textContent = `到達 ${percent}%`;
+      $("sideProgress").style.width = `${percent}%`;
+      const next = badges.find((badge) => !state.earnedBadges.includes(badge.id));
+      $("sideNext").textContent = next ? `次は「${next.label}」へ。` : "一通り到達。過不足と生成量を反復しよう。";
+    }
+
+    function recommendedStage() {
+      const earned = new Set(state.earnedBadges);
+      if (earned.has("limiting") || earned.has("leftover")) return "limiting";
+      if (earned.has("concmol")) return "limiting";
+      if (earned.has("gasmol")) return "concentration";
+      if (earned.has("massmol")) return "gas";
+      if (earned.has("molratio")) return "mass";
+      if (earned.has("balance") || earned.has("atom")) return "ratio";
+      return "balance";
+    }
+
+    function calcProgress() {
+      return Math.round((state.earnedBadges.length / badges.length) * 100);
+    }
+
+    function levelTitle() {
+      const percent = calcProgress();
+      if (percent >= 80) return "過不足・生成量まで";
+      if (percent >= 55) return "量的関係の計算";
+      if (percent >= 30) return "mol比の利用";
+      if (percent > 0) return "反応式の基礎";
+      return "これから開始";
+    }
+
+    function levelText() {
+      const earned = new Set(state.earnedBadges);
+      if (earned.has("limiting")) return "限量試薬まで入っています。生成量まで一連の流れで確認しよう。";
+      if (earned.has("massmol") || earned.has("gasmol") || earned.has("concmol")) return "molへ直してから係数比を使う流れが身についてきています。";
+      if (earned.has("molratio")) return "係数をmol比として読む段階です。次は質量や体積の問題につなげよう。";
+      if (earned.has("balance")) return "反応式の係数合わせが始まっています。次は係数比の意味を確認しよう。";
+      return "まずは係数合わせから始めよう。";
+    }
+
+    function stageName(id) {
+      return stages.find((stage) => stage.id === id)?.name || id;
+    }
+
+    function escapeAttr(value) {
+      return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
+    }
+
+    document.querySelectorAll(".nav-btn").forEach((button) => {
+      button.addEventListener("click", () => setPage(button.dataset.page));
+    });
+
+    $("nextProblem").addEventListener("click", () => {
+      selectedStage = recommendedStage();
+      chooseProblem();
+      saveState();
+      render();
+    });
+
+    $("shuffleProblem").addEventListener("click", () => {
+      chooseProblem();
+      render();
+    });
+
+    $("finishStudy").addEventListener("click", () => setPage("reflection"));
+    $("goPractice").addEventListener("click", () => setPage("practice"));
+
+    $("resetData").addEventListener("click", () => {
+      if (!confirm("このブラウザに保存した学習記録をリセットしますか？")) return;
+      localStorage.removeItem(storageKey);
+      state = loadState();
+      selectedStage = "balance";
+      currentProblem = null;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
