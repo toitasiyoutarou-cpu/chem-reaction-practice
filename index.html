@@ -539,7 +539,7 @@
       <div class="brand">
         <div class="subject">化学基礎</div>
         <h1>化学反応式と<br>量的関係</h1>
-        <div class="sub">反応式の係数を、mol・質量・気体体積・濃度の計算につなげる練習。</div>
+        <div class="sub">係数・日本語から反応式・イオン反応式・量的関係・過不足まで自学する。</div>
       </div>
       <nav aria-label="画面切り替え">
         <button class="nav-btn active" data-page="practice">問題演習</button>
@@ -558,7 +558,7 @@
         <div class="topbar">
           <div>
             <h2>問題演習</h2>
-            <p class="lead">化学反応式をつくり、係数比から量的関係を読む練習に絞っています。</p>
+            <p class="lead">アップロード資料の問題をもとに、反応式づくりから量的関係まで自学できます。</p>
           </div>
           <button class="secondary" id="finishStudy">今日のまとめ</button>
         </div>
@@ -723,123 +723,816 @@
 
     const problems = [
       {
-        id: "b1", stage: "balance", category: "係数合わせ", equation: "Mg + HCl → MgCl2 + H2",
-        prompt: "原子の数が左右でそろう反応式はどれ？",
-        choices: ["Mg + 2HCl → MgCl2 + H2", "2Mg + HCl → MgCl2 + H2", "Mg + HCl → MgCl2 + 2H2", "Mg + 2HCl → 2MgCl2 + H2"],
-        answer: "Mg + 2HCl → MgCl2 + H2",
-        note: "Mgは1個ずつ、Clは右に2個あるので HCl を2にする。Hも2個になり H2 とそろいます。",
-        steps: ["まず金属 Mg をそろえる", "MgCl2 の Cl が2個なので HCl を2にする", "H が2個になったので H2 と一致する"],
-        earns: ["balance", "atom"]
+            "id": "coef01",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "Cu + O2 → CuO",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "2Cu + O2 → 2CuO",
+                  "Cu + O2 → CuO",
+                  "Cu + 2O2 → CuO",
+                  "2Cu + 2O2 → CuO"
+            ],
+            "answer": "2Cu + O2 → 2CuO",
+            "note": "O2の酸素2個に合わせてCuOを2にし、Cuも2にする。",
+            "steps": [
+                  "O2のOは2個",
+                  "CuOを2にする",
+                  "Cuも2にする"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "b2", stage: "balance", category: "燃焼", equation: "C3H8 + O2 → CO2 + H2O",
-        prompt: "プロパンの燃焼で正しい係数はどれ？",
-        choices: ["C3H8 + 5O2 → 3CO2 + 4H2O", "C3H8 + 4O2 → 3CO2 + 4H2O", "2C3H8 + 5O2 → 3CO2 + 4H2O", "C3H8 + 5O2 → CO2 + H2O"],
-        answer: "C3H8 + 5O2 → 3CO2 + 4H2O",
-        note: "Cを3、Hを8にそろえると CO2 は3、H2O は4。右辺のOは10個なので O2 は5です。",
-        steps: ["Cを見て CO2 を3にする", "Hを見て H2O を4にする", "右辺のOは10個なので O2 を5にする"],
-        earns: ["balance", "atom"]
+            "id": "coef02",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "H2 + Cl2 → HCl",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "H2 + Cl2 → 2HCl",
+                  "2H2 + Cl2 → HCl",
+                  "H2 + 2Cl2 → 2HCl",
+                  "H2 + Cl2 → HCl"
+            ],
+            "answer": "H2 + Cl2 → 2HCl",
+            "note": "左辺のHもClも2個。HClを2にするとそろう。",
+            "steps": [
+                  "Hは2個",
+                  "Clも2個",
+                  "HClを2にする"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "r1", stage: "ratio", category: "mol比", equation: "2H2 + O2 → 2H2O",
-        prompt: "H2 と H2O のmol比はどれ？",
-        choices: ["1 : 1", "2 : 1", "1 : 2", "2 : 3"],
-        answer: "1 : 1",
-        note: "係数は H2 : H2O = 2 : 2。比を簡単にすると 1 : 1 です。",
-        steps: ["反応式の係数を見る", "H2 と H2O は 2 : 2", "2で割って 1 : 1"],
-        earns: ["molratio"]
+            "id": "coef03",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "Al + O2 → Al2O3",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "4Al + 3O2 → 2Al2O3",
+                  "2Al + 3O2 → Al2O3",
+                  "Al + O2 → Al2O3",
+                  "4Al + O2 → 2Al2O3"
+            ],
+            "answer": "4Al + 3O2 → 2Al2O3",
+            "note": "O2とAl2O3の酸素数2と3の最小公倍数6でそろえる。",
+            "steps": [
+                  "Oを6個でそろえる",
+                  "Al2O3を2、O2を3",
+                  "Alは4個"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "r2", stage: "ratio", category: "mol比", equation: "CaCO3 + 2HCl → CaCl2 + H2O + CO2",
-        prompt: "CaCO3 と CO2 のmol比はどれ？",
-        choices: ["1 : 1", "1 : 2", "2 : 1", "2 : 3"],
-        answer: "1 : 1",
-        note: "CaCO3 の係数も CO2 の係数も1。炭酸カルシウム1molから二酸化炭素1molができます。",
-        steps: ["係数が書かれていない物質は1と考える", "CaCO3 : CO2 = 1 : 1", "生成するCO2のmolはCaCO3と同じ"],
-        earns: ["molratio"]
+            "id": "coef04",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "H2O2 → H2O + O2",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "2H2O2 → 2H2O + O2",
+                  "H2O2 → H2O + O2",
+                  "2H2O2 → H2O + O2",
+                  "H2O2 → 2H2O + O2"
+            ],
+            "answer": "2H2O2 → 2H2O + O2",
+            "note": "HとOをそろえると2H2O2 → 2H2O + O2。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "m1", stage: "mass", category: "質量→mol→生成量", equation: "2Mg + O2 → 2MgO",
-        prompt: "Mg 12g を完全に反応させると MgO は何molできる？ Mg = 24 g/mol",
-        choices: ["0.50 mol", "1.0 mol", "0.25 mol", "2.0 mol"],
-        answer: "0.50 mol",
-        note: "Mg 12g は 12÷24 = 0.50mol。Mg と MgO の係数比は 2:2 = 1:1 なので MgO も0.50molです。",
-        steps: ["質量をmolに直す: 12÷24=0.50mol", "係数比 Mg:MgO = 2:2", "比は1:1なので MgO は0.50mol"],
-        earns: ["massmol", "molratio", "targetmol"]
+            "id": "coef05",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "Na + H2O → NaOH + H2",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "2Na + 2H2O → 2NaOH + H2",
+                  "Na + H2O → NaOH + H2",
+                  "2Na + H2O → 2NaOH + H2",
+                  "Na + 2H2O → NaOH + H2"
+            ],
+            "answer": "2Na + 2H2O → 2NaOH + H2",
+            "note": "水素がH2で出るので、NaOHと水を2にしてそろえる。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "m2", stage: "mass", category: "質量→気体", equation: "CaCO3 + 2HCl → CaCl2 + H2O + CO2",
-        prompt: "CaCO3 10g から CO2 は何molできる？ CaCO3 = 100 g/mol",
-        choices: ["0.10 mol", "1.0 mol", "0.20 mol", "10 mol"],
-        answer: "0.10 mol",
-        note: "CaCO3 は 10÷100 = 0.10mol。CaCO3 と CO2 は 1:1 なので CO2 も0.10molです。",
-        steps: ["CaCO3のmolを出す: 10÷100=0.10mol", "係数比 CaCO3:CO2 = 1:1", "CO2 は0.10mol"],
-        earns: ["massmol", "molratio", "targetmol"]
+            "id": "coef06",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "P4O10 + H2O → H3PO4",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "P4O10 + 6H2O → 4H3PO4",
+                  "P4O10 + H2O → H3PO4",
+                  "P4O10 + 4H2O → 4H3PO4",
+                  "2P4O10 + 6H2O → 4H3PO4"
+            ],
+            "answer": "P4O10 + 6H2O → 4H3PO4",
+            "note": "Pが4個なのでH3PO4を4にし、Hを12個にするためH2Oを6にする。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "g1", stage: "gas", category: "気体体積", equation: "Mg + 2HCl → MgCl2 + H2",
-        prompt: "標準状態で H2 5.6L は何mol？",
-        choices: ["0.25 mol", "0.50 mol", "1.0 mol", "5.6 mol"],
-        answer: "0.25 mol",
-        note: "標準状態では 1mol = 22.4L。5.6÷22.4 = 0.25molです。",
-        steps: ["気体体積は22.4Lで割る", "5.6÷22.4=0.25mol", "H2 は0.25mol"],
-        earns: ["gasmol"]
+            "id": "coef07",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "H2S + SO2 → H2O + S",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "2H2S + SO2 → 2H2O + 3S",
+                  "H2S + SO2 → H2O + S",
+                  "2H2S + SO2 → H2O + 3S",
+                  "H2S + 2SO2 → 2H2O + 3S"
+            ],
+            "answer": "2H2S + SO2 → 2H2O + 3S",
+            "note": "Hをそろえると水が2個、Sは合計3個になる。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "g2", stage: "gas", category: "気体体積→反応量", equation: "2H2 + O2 → 2H2O",
-        prompt: "H2 11.2L を完全に反応させるのに必要な O2 は何mol？ 標準状態",
-        choices: ["0.25 mol", "0.50 mol", "1.0 mol", "2.0 mol"],
-        answer: "0.25 mol",
-        note: "H2 11.2L は0.50mol。H2:O2 = 2:1 なので、O2 は0.50×1/2 = 0.25molです。",
-        steps: ["H2をmolに直す: 11.2÷22.4=0.50mol", "係数比 H2:O2 = 2:1", "O2 は0.50×1/2=0.25mol"],
-        earns: ["gasmol", "molratio", "targetmol"]
+            "id": "coef08",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "MnO2 + HCl → MnCl2 + H2O + Cl2",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "MnO2 + 4HCl → MnCl2 + 2H2O + Cl2",
+                  "MnO2 + 2HCl → MnCl2 + H2O + Cl2",
+                  "2MnO2 + 4HCl → MnCl2 + 2H2O + Cl2",
+                  "MnO2 + 4HCl → MnCl2 + H2O + Cl2"
+            ],
+            "answer": "MnO2 + 4HCl → MnCl2 + 2H2O + Cl2",
+            "note": "Oが2個なので2H2O。Hが4個必要なので4HCl。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "c1", stage: "concentration", category: "モル濃度", equation: "HCl(aq)",
-        prompt: "1.0 mol/L の塩酸 0.20L に含まれる HCl は何mol？",
-        choices: ["0.20 mol", "1.2 mol", "5.0 mol", "0.020 mol"],
-        answer: "0.20 mol",
-        note: "物質量 = モル濃度 × 体積(L)。1.0×0.20 = 0.20molです。",
-        steps: ["体積をLで使う", "cV = 1.0×0.20", "HCl は0.20mol"],
-        earns: ["concmol"]
+            "id": "coef09",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "NH4Cl + Ca(OH)2 → CaCl2 + H2O + NH3",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "2NH4Cl + Ca(OH)2 → CaCl2 + 2H2O + 2NH3",
+                  "NH4Cl + Ca(OH)2 → CaCl2 + H2O + NH3",
+                  "2NH4Cl + Ca(OH)2 → CaCl2 + H2O + 2NH3",
+                  "NH4Cl + 2Ca(OH)2 → CaCl2 + 2H2O + NH3"
+            ],
+            "answer": "2NH4Cl + Ca(OH)2 → CaCl2 + 2H2O + 2NH3",
+            "note": "CaCl2のClが2個なのでNH4Clを2にする。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "c2", stage: "concentration", category: "濃度→気体", equation: "Mg + 2HCl → MgCl2 + H2",
-        prompt: "1.0 mol/L の塩酸 0.40L が十分なMgと反応すると H2 は何molできる？",
-        choices: ["0.20 mol", "0.40 mol", "0.80 mol", "1.0 mol"],
-        answer: "0.20 mol",
-        note: "HCl は1.0×0.40=0.40mol。HCl:H2 = 2:1 なので H2 は0.20molです。",
-        steps: ["HClをmolに直す: 1.0×0.40=0.40mol", "係数比 HCl:H2 = 2:1", "H2 は0.40×1/2=0.20mol"],
-        earns: ["concmol", "molratio", "targetmol"]
+            "id": "coef10",
+            "stage": "balance",
+            "category": "係数合わせ",
+            "equation": "Cu + H2SO4 → CuSO4 + H2O + SO2",
+            "prompt": "正しい係数はどれ？",
+            "choices": [
+                  "Cu + 2H2SO4 → CuSO4 + 2H2O + SO2",
+                  "Cu + H2SO4 → CuSO4 + H2O + SO2",
+                  "2Cu + H2SO4 → CuSO4 + H2O + SO2",
+                  "Cu + 2H2SO4 → 2CuSO4 + H2O + SO2"
+            ],
+            "answer": "Cu + 2H2SO4 → CuSO4 + 2H2O + SO2",
+            "note": "H2SO4を2にするとSが2個、Hが4個。CuSO4・SO2・2H2Oでそろう。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "l1", stage: "limiting", category: "限量試薬", equation: "Mg + 2HCl → MgCl2 + H2",
-        prompt: "Mg 1.0mol と HCl 1.5mol を反応させる。先になくなる物質はどれ？",
-        choices: ["HCl", "Mg", "どちらも同時", "MgCl2"],
-        answer: "HCl",
-        note: "Mg 1.0mol には HCl 2.0mol が必要。HCl は1.5molしかないので、HClが限量試薬です。",
-        steps: ["Mg 1.0molに必要なHClを考える", "係数比 Mg:HCl = 1:2 なので2.0mol必要", "実際は1.5molなのでHClが不足"],
-        earns: ["limiting"]
+            "id": "jp01",
+            "stage": "balance",
+            "category": "日本語→反応式",
+            "equation": "水素が燃焼すると水が生成する",
+            "prompt": "反応式はどれ？",
+            "choices": [
+                  "2H2 + O2 → 2H2O",
+                  "H2 + O2 → H2O",
+                  "H2 + Cl2 → 2HCl",
+                  "2H2O → 2H2 + O2"
+            ],
+            "answer": "2H2 + O2 → 2H2O",
+            "note": "水素H2と酸素O2から水H2Oができる。係数は2:1:2。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "l2", stage: "limiting", category: "余る量・生成量", equation: "Mg + 2HCl → MgCl2 + H2",
-        prompt: "Mg 1.0mol と HCl 1.5mol では、Mg は何mol余る？",
-        choices: ["0.25 mol", "0.50 mol", "0 mol", "1.5 mol"],
-        answer: "0.25 mol",
-        note: "HCl 1.5mol と反応する Mg は0.75mol。Mgは 1.0-0.75=0.25mol 余ります。",
-        steps: ["HClを基準にする", "係数比 HCl:Mg = 2:1 なので Mgは1.5×1/2=0.75mol反応", "最初のMg 1.0molから引いて0.25mol余る"],
-        earns: ["leftover", "limiting"]
+            "id": "jp02",
+            "stage": "balance",
+            "category": "日本語→反応式",
+            "equation": "一酸化炭素が燃焼すると二酸化炭素が生成する",
+            "prompt": "反応式はどれ？",
+            "choices": [
+                  "2CO + O2 → 2CO2",
+                  "CO + O2 → CO2",
+                  "C + O2 → CO2",
+                  "2CO2 → 2CO + O2"
+            ],
+            "answer": "2CO + O2 → 2CO2",
+            "note": "COに酸素が加わりCO2になる。Oをそろえると2:1:2。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
       },
       {
-        id: "l3", stage: "limiting", category: "生成量", equation: "CaCO3 + 2HCl → CaCl2 + H2O + CO2",
-        prompt: "CaCO3 0.30mol が十分な塩酸と反応すると、CO2 は標準状態で何Lできる？",
-        choices: ["6.72 L", "3.36 L", "22.4 L", "0.30 L"],
-        answer: "6.72 L",
-        note: "CaCO3:CO2 = 1:1 なので CO2 は0.30mol。標準状態の体積は0.30×22.4=6.72Lです。",
-        steps: ["係数比 CaCO3:CO2 = 1:1", "CO2 は0.30mol", "気体体積は0.30×22.4=6.72L"],
-        earns: ["yield", "molratio", "targetmol"]
+            "id": "jp03",
+            "stage": "balance",
+            "category": "日本語→反応式",
+            "equation": "アルミニウムが燃焼すると酸化アルミニウムが生成する",
+            "prompt": "反応式はどれ？",
+            "choices": [
+                  "4Al + 3O2 → 2Al2O3",
+                  "2Al + O2 → Al2O3",
+                  "Al + O2 → Al2O3",
+                  "Al2O3 → Al + O2"
+            ],
+            "answer": "4Al + 3O2 → 2Al2O3",
+            "note": "AlとO2からAl2O3をつくる。Oを6個でそろえる。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
+      },
+      {
+            "id": "jp04",
+            "stage": "balance",
+            "category": "日本語→反応式",
+            "equation": "亜鉛に塩酸を加えると塩化亜鉛と水素が生成する",
+            "prompt": "反応式はどれ？",
+            "choices": [
+                  "Zn + 2HCl → ZnCl2 + H2",
+                  "Zn + HCl → ZnCl2 + H2",
+                  "Zn + H2SO4 → ZnSO4 + H2",
+                  "Mg + 2HCl → MgCl2 + H2"
+            ],
+            "answer": "Zn + 2HCl → ZnCl2 + H2",
+            "note": "ZnとHClからZnCl2とH2。Clが2個なのでHClを2にする。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
+      },
+      {
+            "id": "jp05",
+            "stage": "balance",
+            "category": "日本語→反応式",
+            "equation": "塩素酸カリウムを加熱すると塩化カリウムと酸素が発生する",
+            "prompt": "反応式はどれ？",
+            "choices": [
+                  "2KClO3 → 2KCl + 3O2",
+                  "KClO3 → KCl + O2",
+                  "2KCl + 3O2 → 2KClO3",
+                  "KClO3 → KCl + 3O2"
+            ],
+            "answer": "2KClO3 → 2KCl + 3O2",
+            "note": "触媒MnO2は反応式に含めず、KClO3の分解だけを書く。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
+      },
+      {
+            "id": "jp06",
+            "stage": "balance",
+            "category": "日本語→反応式",
+            "equation": "NaCl水溶液にAgNO3水溶液を加えるとAgClの沈殿が生成する",
+            "prompt": "反応式はどれ？",
+            "choices": [
+                  "NaCl + AgNO3 → AgCl + NaNO3",
+                  "AgNO3 + HCl → AgCl + HNO3",
+                  "NaCl + Ag → AgCl + Na",
+                  "AgCl → Ag+ + Cl-"
+            ],
+            "answer": "NaCl + AgNO3 → AgCl + NaNO3",
+            "note": "Ag+とCl-でAgCl沈殿。残りはNaNO3。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
+      },
+      {
+            "id": "jp07",
+            "stage": "balance",
+            "category": "日本語→反応式",
+            "equation": "炭酸水素ナトリウムを加熱すると炭酸ナトリウム・水・二酸化炭素に分解する",
+            "prompt": "反応式はどれ？",
+            "choices": [
+                  "2NaHCO3 → Na2CO3 + H2O + CO2",
+                  "NaHCO3 → Na2CO3 + H2O + CO2",
+                  "Na2CO3 + H2O + CO2 → 2NaHCO3",
+                  "NaHCO3 + HCl → NaCl + H2O + CO2"
+            ],
+            "answer": "2NaHCO3 → Na2CO3 + H2O + CO2",
+            "note": "Na2CO3のNaが2個なのでNaHCO3を2にする。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
+      },
+      {
+            "id": "ion01",
+            "stage": "balance",
+            "category": "イオン反応式",
+            "equation": "Ag+ + Cl- → AgCl",
+            "prompt": "塩化銀沈殿のイオン反応式はどれ？",
+            "choices": [
+                  "Ag+ + Cl- → AgCl",
+                  "Ag+ + NO3- → AgNO3",
+                  "Na+ + Cl- → NaCl",
+                  "AgCl → Ag+ + Cl-"
+            ],
+            "answer": "Ag+ + Cl- → AgCl",
+            "note": "沈殿に直接関係するAg+とCl-だけを書く。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
+      },
+      {
+            "id": "ion02",
+            "stage": "balance",
+            "category": "イオン反応式",
+            "equation": "Al3+ + OH- → Al(OH)3",
+            "prompt": "水酸化アルミニウム沈殿のイオン反応式はどれ？",
+            "choices": [
+                  "Al3+ + 3OH- → Al(OH)3",
+                  "Al3+ + OH- → AlOH",
+                  "AlCl3 + NaOH → Al(OH)3",
+                  "Al3+ + 2OH- → Al(OH)2"
+            ],
+            "answer": "Al3+ + 3OH- → Al(OH)3",
+            "note": "Al(OH)3にはOHが3個必要。電荷も合う。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "balance",
+                  "atom"
+            ]
+      },
+      {
+            "id": "tbl01",
+            "stage": "ratio",
+            "category": "表でmol比",
+            "equation": "3H2 + N2 → 2NH3",
+            "prompt": "H2 : N2 : NH3 の物質量比はどれ？",
+            "choices": [
+                  "3 : 1 : 2",
+                  "1 : 3 : 2",
+                  "3 : 2 : 1",
+                  "1 : 1 : 1"
+            ],
+            "answer": "3 : 1 : 2",
+            "note": "係数がそのまま物質量比を表す。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "molratio"
+            ]
+      },
+      {
+            "id": "tbl02",
+            "stage": "ratio",
+            "category": "表でmol比",
+            "equation": "CH4 + 2O2 → CO2 + 2H2O",
+            "prompt": "CH4 1molからCO2は何molできる？",
+            "choices": [
+                  "1 mol",
+                  "2 mol",
+                  "0.5 mol",
+                  "4 mol"
+            ],
+            "answer": "1 mol",
+            "note": "CH4とCO2の係数はどちらも1。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "molratio",
+                  "targetmol"
+            ]
+      },
+      {
+            "id": "q120301",
+            "stage": "ratio",
+            "category": "水の生成",
+            "equation": "2H2 + O2 → 2H2O",
+            "prompt": "水1.0molを得るために必要な酸素は何mol？",
+            "choices": [
+                  "0.50 mol",
+                  "1.0 mol",
+                  "2.0 mol",
+                  "0.25 mol"
+            ],
+            "answer": "0.50 mol",
+            "note": "O2:H2O=1:2。水1.0molには酸素0.50mol。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "molratio",
+                  "targetmol"
+            ]
+      },
+      {
+            "id": "q120302",
+            "stage": "mass",
+            "category": "水の生成",
+            "equation": "2H2 + O2 → 2H2O",
+            "prompt": "水素6.0gから生じる水は何g？ H2=2.0, H2O=18",
+            "choices": [
+                  "54 g",
+                  "18 g",
+                  "36 g",
+                  "72 g"
+            ],
+            "answer": "54 g",
+            "note": "H2は3.0mol。H2:H2O=1:1なので水も3.0mol、18×3.0=54g。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "massmol",
+                  "molratio",
+                  "targetmol",
+                  "yield"
+            ]
+      },
+      {
+            "id": "q120401",
+            "stage": "ratio",
+            "category": "エタンの燃焼",
+            "equation": "2C2H6 + 7O2 → 4CO2 + 6H2O",
+            "prompt": "エタン0.40molを完全燃焼させるには酸素が何mol必要？",
+            "choices": [
+                  "1.4 mol",
+                  "0.70 mol",
+                  "2.8 mol",
+                  "0.40 mol"
+            ],
+            "answer": "1.4 mol",
+            "note": "C2H6:O2=2:7。0.40×7/2=1.4mol。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "molratio",
+                  "targetmol"
+            ]
+      },
+      {
+            "id": "q120402",
+            "stage": "gas",
+            "category": "エタンの燃焼",
+            "equation": "2C2H6 + 7O2 → 4CO2 + 6H2O",
+            "prompt": "エタン15gを燃焼させるのに必要な酸素は何L？ C2H6=30, 標準状態",
+            "choices": [
+                  "39.2 L",
+                  "11.2 L",
+                  "78.4 L",
+                  "22.4 L"
+            ],
+            "answer": "39.2 L",
+            "note": "15÷30=0.50mol。O2は1.75mol、体積は39.2L。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "massmol",
+                  "molratio",
+                  "targetmol",
+                  "gasmol"
+            ]
+      },
+      {
+            "id": "q120501",
+            "stage": "mass",
+            "category": "アンモニアの生成",
+            "equation": "N2 + 3H2 → 2NH3",
+            "prompt": "0.50molの窒素は何gの水素と反応する？ H2=2.0",
+            "choices": [
+                  "3.0 g",
+                  "1.0 g",
+                  "6.0 g",
+                  "0.50 g"
+            ],
+            "answer": "3.0 g",
+            "note": "N2:H2=1:3。H2は1.5mol、質量は3.0g。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "molratio",
+                  "targetmol",
+                  "yield"
+            ]
+      },
+      {
+            "id": "q120502",
+            "stage": "mass",
+            "category": "アンモニアの生成",
+            "equation": "N2 + 3H2 → 2NH3",
+            "prompt": "窒素11.2gから生じるアンモニア分子は何個？ N2=28, NA=6.0×10^23",
+            "choices": [
+                  "4.8×10^23個",
+                  "2.4×10^23個",
+                  "1.2×10^24個",
+                  "6.0×10^23個"
+            ],
+            "answer": "4.8×10^23個",
+            "note": "N2は0.40mol。NH3は0.80mol。分子数は4.8×10^23個。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "massmol",
+                  "molratio",
+                  "targetmol",
+                  "yield"
+            ]
+      },
+      {
+            "id": "q120601",
+            "stage": "mass",
+            "category": "マグネシウムの燃焼",
+            "equation": "2Mg + O2 → 2MgO",
+            "prompt": "Mg4.8gを燃焼させるとMgOは何g？ Mg=24, MgO=40",
+            "choices": [
+                  "8.0 g",
+                  "4.8 g",
+                  "16 g",
+                  "12 g"
+            ],
+            "answer": "8.0 g",
+            "note": "Mgは0.20mol。MgOも0.20mol。40×0.20=8.0g。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "massmol",
+                  "molratio",
+                  "targetmol",
+                  "yield"
+            ]
+      },
+      {
+            "id": "q120602",
+            "stage": "gas",
+            "category": "マグネシウムの燃焼",
+            "equation": "2Mg + O2 → 2MgO",
+            "prompt": "MgOが24g生じた。この燃焼に必要な酸素は何L？ MgO=40, 標準状態",
+            "choices": [
+                  "6.72 L",
+                  "13.4 L",
+                  "22.4 L",
+                  "3.36 L"
+            ],
+            "answer": "6.72 L",
+            "note": "MgOは0.60mol。O2は0.30mol。体積は6.72L。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "massmol",
+                  "molratio",
+                  "targetmol",
+                  "gasmol"
+            ]
+      },
+      {
+            "id": "q120701",
+            "stage": "gas",
+            "category": "鉄と希硫酸",
+            "equation": "Fe + H2SO4 → FeSO4 + H2",
+            "prompt": "H2が16.8L発生したとき、用いたFeは何g？ Fe=56, 標準状態",
+            "choices": [
+                  "42 g",
+                  "56 g",
+                  "28 g",
+                  "84 g"
+            ],
+            "answer": "42 g",
+            "note": "H2は0.75mol。Feも0.75mol。56×0.75=42g。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "gasmol",
+                  "molratio",
+                  "targetmol",
+                  "yield"
+            ]
+      },
+      {
+            "id": "q120702",
+            "stage": "concentration",
+            "category": "鉄と希硫酸",
+            "equation": "Fe + H2SO4 → FeSO4 + H2",
+            "prompt": "Fe2.8gを反応させるには5.0mol/L希硫酸が何mL必要？ Fe=56",
+            "choices": [
+                  "10 mL",
+                  "20 mL",
+                  "50 mL",
+                  "100 mL"
+            ],
+            "answer": "10 mL",
+            "note": "Feは0.050mol。H2SO4も0.050mol。V=0.050÷5.0=0.010L=10mL。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "massmol",
+                  "molratio",
+                  "targetmol",
+                  "concmol"
+            ]
+      },
+      {
+            "id": "q120801",
+            "stage": "limiting",
+            "category": "過不足",
+            "equation": "Zn + H2SO4 → ZnSO4 + H2",
+            "prompt": "Zn26gを1.0mol/L希硫酸300mLに加えた。残ったZnは何mol？ Zn=65",
+            "choices": [
+                  "0.10 mol",
+                  "0.30 mol",
+                  "0.40 mol",
+                  "0 mol"
+            ],
+            "answer": "0.10 mol",
+            "note": "Znは0.40mol、H2SO4は0.30mol。1:1で反応するのでZnが0.10mol余る。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "massmol",
+                  "concmol",
+                  "limiting",
+                  "leftover"
+            ]
+      },
+      {
+            "id": "q120802",
+            "stage": "limiting",
+            "category": "過不足",
+            "equation": "Zn + H2SO4 → ZnSO4 + H2",
+            "prompt": "前問の条件で発生するH2は何L？ 標準状態",
+            "choices": [
+                  "6.72 L",
+                  "8.96 L",
+                  "2.24 L",
+                  "11.2 L"
+            ],
+            "answer": "6.72 L",
+            "note": "限量試薬H2SO4が0.30molなのでH2も0.30mol。体積は6.72L。",
+            "steps": [
+                  "式の係数を確認する",
+                  "基準の物質をmolに直す",
+                  "係数比で目的の量へ進む"
+            ],
+            "earns": [
+                  "limiting",
+                  "yield",
+                  "gasmol",
+                  "molratio"
+            ]
       }
-    ];
+];
 
     let state = loadState();
     let selectedStage = state.selectedStage || "balance";
