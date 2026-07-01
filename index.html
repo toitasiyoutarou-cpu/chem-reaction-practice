@@ -1,36 +1,11 @@
 <!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ChemQuest｜化学反応式と量的関係</title>
 <style>
-:root{--blue:#2f6fed;--blue2:#1f5dd8;--sky:#eef7ff;--ink:#172033;--sub:#667085;--line:#d9e6f5;--paper:#f7fbff;--green:#22c55e;--orange:#f59e0b;--purple:#8b5cf6;--red:#ef4444;--shadow:0 14px 34px rgba(47,111,237,.14);font-family:"Yu Gothic UI","Meiryo",system-ui,sans-serif;}
-*{box-sizing:border-box} body{margin:0;background:linear-gradient(120deg,#f7fcff,#eef7ff 45%,#f9fbff);color:var(--ink)} button,select{font:inherit}
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh} aside{position:sticky;top:0;height:100vh;background:rgba(255,255,255,.92);border-right:1px solid var(--line);padding:24px 18px;overflow:auto} main{padding:28px;max-width:1280px;width:100%}
-.logo{font-size:28px;font-weight:1000;color:var(--blue);letter-spacing:-.04em;margin:8px 0 4px} .tagline{color:var(--sub);font-weight:700;margin-bottom:24px} .nav{display:grid;gap:10px} .nav button{border:0;background:transparent;border-radius:999px;min-height:50px;text-align:left;padding:0 18px;font-weight:900;color:#4b5563;cursor:pointer} .nav button.active{background:linear-gradient(90deg,var(--blue),#3b82f6);color:#fff;box-shadow:0 10px 22px rgba(47,111,237,.28)}
-.side-card{margin-top:24px;border:1px solid var(--line);border-radius:16px;padding:18px;background:#fff} .donut{width:136px;height:136px;margin:12px auto;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) calc(var(--p)*1%),#e5eaf2 0)} .donut span{width:92px;height:92px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:28px;font-weight:1000} .mini-row{display:flex;justify-content:space-between;border-top:1px solid #edf2f7;padding:9px 0;font-weight:800}
-.hero{border:1px solid #cfe2ff;border-radius:22px;background:linear-gradient(100deg,#fff,#eef8ff);padding:28px 32px;margin-bottom:24px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center} h1{font-size:31px;margin:0 0 8px;letter-spacing:-.03em} .lead{margin:0;color:var(--sub);font-weight:700;line-height:1.7} .pillbox{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .pill{border:1px solid #bcd5ff;background:#fff;color:var(--blue2);border-radius:999px;padding:6px 12px;font-weight:900;font-size:13px} .beaker{font-size:54px;transform:rotate(-18deg)}
-.section-title{font-size:24px;font-weight:1000;margin:20px 0 14px} .unit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:20px} .unit-card{position:relative;border:2px solid var(--line);background:#fff;border-radius:20px;padding:22px;min-height:190px;box-shadow:var(--shadow);cursor:pointer;text-align:left} .unit-card.active{border-color:var(--blue);background:linear-gradient(180deg,#fff,#f1f7ff)} .unit-card.calc.active{border-color:var(--green);background:linear-gradient(180deg,#fff,#f0fff6)} .unit-num{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff;font-weight:1000;font-size:20px} .unit-card.calc .unit-num{background:var(--green)} .unit-card h2{margin:18px 0 8px;font-size:22px;color:var(--blue)} .unit-card.calc h2{color:#15a34a} .unit-card p{margin:0;color:var(--sub);line-height:1.6;font-weight:700} .bar{height:10px;background:#e7edf5;border-radius:99px;overflow:hidden;margin-top:18px} .bar span{display:block;height:100%;width:0;background:var(--blue);border-radius:99px} .unit-card.calc .bar span{background:var(--green)}
-.setup{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:16px;background:#fff;padding:16px;margin-bottom:24px} select{min-height:46px;border:1px solid #cbdaf0;border-radius:12px;background:#fff;padding:0 14px;font-weight:900} .primary,.secondary,.danger{min-height:46px;border-radius:12px;padding:0 18px;font-weight:1000;cursor:pointer} .primary{background:var(--blue);color:#fff;border:0} .secondary{background:#fff;color:var(--blue);border:1px solid var(--blue)} .danger{background:#fff;color:var(--red);border:1px solid #fecaca}
-.panel{border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:20px;margin-bottom:20px} .study-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px} .problem{background:#111827;color:#fff;border-radius:18px;padding:24px;margin-bottom:16px} .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px} .chip{display:inline-flex;align-items:center;border-radius:999px;background:rgba(255,255,255,.14);padding:5px 10px;font-size:12px;font-weight:900} .problem .eq{font-size:28px;font-weight:1000;margin:0 0 10px;overflow-wrap:anywhere} .problem p{margin:0;color:rgba(255,255,255,.78);line-height:1.7;font-weight:700} .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px} .choice{border:1px solid var(--line);border-radius:14px;background:#fff;min-height:62px;padding:12px;text-align:left;font-weight:900;cursor:pointer} .choice.correct{border-color:#86efac;background:#f0fdf4;color:#166534} .choice.wrong{border-color:#fecaca;background:#fff1f2;color:#991b1b} .explain{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:var(--paper);padding:14px;color:#56657a;line-height:1.7;font-weight:700} .steps{display:grid;gap:8px;margin-top:10px} .step{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start} .step b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#fff3d8;color:#a16207}
-.stage-list{display:grid;gap:10px} .stage{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:15px;background:#fff;padding:12px;text-align:left;cursor:pointer} .stage.selected{border-color:var(--blue);background:#eef7ff} .stage b:first-child{width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center} .stage small{display:block;color:var(--sub);font-weight:700;margin-top:2px} .stars{color:#d97706;white-space:nowrap;font-weight:1000}
-.records{display:grid;grid-template-columns:repeat(3,1fr);gap:12px} .stat{border:1px solid var(--line);border-radius:15px;background:var(--paper);padding:14px} .stat b{display:block;font-size:28px} .badgegrid{display:flex;gap:8px;flex-wrap:wrap} .badge{border:1px solid #d8e5f4;background:#f3f6fb;border-radius:999px;padding:7px 11px;font-weight:900;color:#64748b} .badge.on{background:#ecfdf3;color:#15803d;border-color:#bbf7d0} .list{padding:0;margin:0;list-style:none;display:grid;gap:10px} .list li{border:1px solid var(--line);border-radius:14px;background:var(--paper);padding:12px;line-height:1.6} .hidden{display:none!important} .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--blue);color:#fff;border-radius:999px;padding:12px 18px;font-weight:1000;transition:.2s} .toast.show{opacity:1;transform:translateX(-50%)}
-@media(max-width:900px){.app{grid-template-columns:1fr} aside{position:static;height:auto} .unit-grid,.study-grid,.choices,.records{grid-template-columns:1fr} .hero{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<div class="app"><aside><div class="logo">⚗️ ChemQuest</div><div class="tagline">化学を楽しく、確実に。</div><div class="nav"><button class="active" data-page="home">🏠 ホーム</button><button data-page="practice">📝 問題演習</button><button data-page="record">📊 学習記録</button></div><div class="side-card"><strong>習熟度サマリー</strong><div class="donut" id="donut" style="--p:0"><span id="totalPercent">0%</span></div><div class="mini-row"><span>化学反応式</span><b id="pReaction">0%</b></div><div class="mini-row"><span>量的関係</span><b id="pCalc">0%</b></div><div class="mini-row"><span>収録問題</span><b id="qTotal">0問</b></div></div></aside><main>
-<section class="page" id="home"><div class="hero"><div><h1>こんにちは！今日も一緒にがんばろう！</h1><p class="lead">まずは単元を大きく2つに整理しました。「化学反応式」と「量的関係の計算」を分けて学習できます。</p><div class="pillbox"><span class="pill">4択</span><span class="pill">単元別メーター</span><span class="pill">進捗保存</span><span class="pill">全問モード</span></div></div><div class="beaker">🧪</div></div><div class="section-title">📚 単元を選択</div><div class="unit-grid" id="unitCards"></div><div class="setup"><strong>問題を設定</strong><label>小単元 <select id="stageSelect"></select></label><label>問題数 <select id="countSelect"><option>5問</option><option>10問</option><option>全問</option></select></label><button class="primary" id="startBtn">この設定で始める →</button><button class="secondary" id="resetBtn">記録リセット</button></div><div class="panel"><h3>📊 学習記録</h3><div id="homeRecords"></div></div></section>
-<section class="page hidden" id="practice"><div class="hero"><div><h1 id="practiceTitle">問題演習</h1><p class="lead" id="practiceLead">選択肢を押すと、解説と手順が表示されます。</p></div><button class="secondary" id="backHome">ホームへ</button></div><div class="study-grid"><div class="panel"><div class="problem"><div class="chips" id="tags"></div><div class="eq" id="eq"></div><p id="prompt"></p></div><div class="choices" id="choices"></div><div class="explain" id="explain">選択肢を選ぶと解説が出ます。</div><div class="setup"><button class="secondary" id="prevBtn">前の問題へ</button><button class="primary hidden" id="nextBtn">次のおすすめへ</button><button class="secondary" id="shuffleBtn">同じ小単元でもう1問</button></div></div><div class="panel"><h3>小単元を選ぶ</h3><div class="stage-list" id="stageList"></div></div></div></section>
-<section class="page hidden" id="record"><div class="hero"><div><h1>学習記録</h1><p class="lead">このブラウザに保存されます。必要ならリセットできます。</p></div><button class="danger" id="resetBtn2">進捗をリセット</button></div><div class="panel"><div class="records"><div class="stat"><b id="clearCount">0</b><span>クリア</span></div><div class="stat"><b id="badgeCount">0</b><span>できた手順</span></div><div class="stat"><b id="recentCount">0</b><span>最近の演習</span></div></div></div><div class="panel"><h3>できた手順</h3><div class="badgegrid" id="badges"></div></div><div class="panel"><h3>最近解いた問題</h3><ul class="list" id="recent"></ul></div></section>
-</main></div><div class="toast" id="toast"></div>
-<script>
-const storageKey="chemquest-reaction-calc-split-v2";
-const units=[{id:"reaction",num:1,title:"化学反応式",desc:"係数合わせ、日本語から反応式、燃焼反応式、イオン反応式まで。",stages:["balance"]},{id:"calc",num:2,title:"量的関係の計算",desc:"係数比とmol比、質量・気体体積・モル濃度、過不足と生成量まで。",stages:["ratio","mass","gas","concentration","limiting"]}];
-const stages=[{id:"balance",name:"化学反応式",detail:"係数合わせ・反応式づくり・イオン反応式"},{id:"ratio",name:"係数比とmol比",detail:"係数を物質量比として読む"},{id:"mass",name:"質量から計算",detail:"質量→mol→係数比→答え"},{id:"gas",name:"気体体積から計算",detail:"標準状態22.4L/molを使う"},{id:"concentration",name:"モル濃度から計算",detail:"cVでmolを出す"},{id:"limiting",name:"過不足と生成量",detail:"限量試薬・余る量・発生量"}];
-const badges=[{id:"balance",label:"係数をそろえた"},{id:"atom",label:"原子保存を確認した"},{id:"molratio",label:"係数からmol比を読めた"},{id:"massmol",label:"質量をmolに直せた"},{id:"gasmol",label:"気体体積をmolに直せた"},{id:"concmol",label:"モル濃度からmolを出せた"},{id:"targetmol",label:"目的物質のmolを出せた"},{id:"limiting",label:"限量試薬を判断できた"},{id:"leftover",label:"余る量を求められた"},{id:"yield",label:"生成量を求められた"}];
-const problems=[
+:root{--blue:#2f6fed;--green:#20bf63;--orange:#f59e0b;--purple:#8b5cf6;--ink:#0f172a;--sub:#64748b;--line:#d7e3f3;--bg:#eef7ff;--panel:#fff;--soft:#f5faff;--red:#dc2626;--redsoft:#fff1f2;--shadow:0 18px 45px rgba(30,78,140,.10);font-family:"Yu Gothic UI","Meiryo",system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;color:var(--ink);background:linear-gradient(180deg,#f7fcff,#eaf6ff)}button,select{font:inherit}.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}aside{border-right:1px solid var(--line);background:rgba(255,255,255,.9);padding:30px 18px;position:sticky;top:0;height:100vh}.brand{font-size:29px;font-weight:900;color:#2563eb;display:flex;gap:8px;align-items:center}.tagline{color:var(--sub);font-weight:700;margin:6px 0 30px}.nav{display:grid;gap:10px}.nav button{border:0;background:transparent;border-radius:22px;padding:14px 18px;text-align:left;font-weight:800;cursor:pointer}.nav button.active{background:#3478f6;color:white;box-shadow:0 12px 24px rgba(47,111,237,.28)}.sidebox{margin-top:28px;border:1px solid var(--line);border-radius:14px;background:white;padding:18px}.donut{width:138px;height:138px;border-radius:50%;margin:14px auto;background:conic-gradient(var(--green) 0deg,#e5ebf3 0deg);display:grid;place-items:center}.donut span{width:92px;height:92px;border-radius:50%;background:white;display:grid;place-items:center;font-size:28px;font-weight:900}.side-row{display:flex;justify-content:space-between;border-top:1px solid #e5edf7;padding:10px 0;font-weight:800}main{padding:28px;max-width:1280px;width:100%}.hero{border:1px solid #c9defe;background:#f2f9ff;border-radius:22px;padding:30px 34px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}h1{margin:0;font-size:30px}.lead{margin:10px 0 0;color:var(--sub);font-weight:700}.page{display:none}.page.active{display:block}.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.unit-card{border:2px solid var(--line);background:white;border-radius:18px;padding:22px;min-height:245px;cursor:pointer;box-shadow:var(--shadow)}.unit-card.active{border-color:var(--blue)}.unit-card.calc.active{border-color:var(--green)}.num{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:white;font-weight:900;font-size:21px}.calc .num{background:var(--green)}.unit-card h2{color:var(--blue);margin:20px 0 8px}.calc h2{color:#16a34a}.bar{height:10px;border-radius:999px;background:#e6edf6;overflow:hidden;margin:22px 0 10px}.bar span{display:block;height:100%;width:0;background:var(--blue);border-radius:inherit}.calc .bar span{background:var(--green)}.study-layout{display:grid;grid-template-columns:minmax(0,1.1fr) 520px;gap:20px}.panel{background:white;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px}.problem-card{background:#111827;color:white;border-radius:16px;padding:24px;margin-bottom:16px}.chips{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}.chip{background:rgba(255,255,255,.13);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:900}.stars{color:#f97316}.equation{font-size:28px;font-weight:900;margin:0 0 12px}.prompt{margin:0;font-weight:800;line-height:1.6}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.choice{min-height:62px;border:1px solid var(--line);background:white;border-radius:12px;padding:14px;text-align:left;font-weight:900;cursor:pointer}.choice.correct{background:#ecfdf5;border-color:#86efac;color:#166534}.choice.wrong{background:var(--redsoft);border-color:#fecaca;color:#b91c1c}.explain{margin-top:14px;background:#f1f7fd;border:1px solid var(--line);border-radius:14px;padding:16px;color:#334155;line-height:1.75;font-weight:700}.steps{display:grid;gap:8px;margin-top:12px}.step{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}.step b{width:28px;height:28px;border-radius:50%;background:#fdecc8;display:grid;place-items:center;color:#b45309}.actions{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:0;display:flex;gap:10px;flex-wrap:wrap}.primary,.secondary{border-radius:12px;padding:12px 18px;font-weight:900;cursor:pointer}.primary{background:var(--blue);border:1px solid var(--blue);color:white}.secondary{background:white;border:1px solid var(--blue);color:#2563eb}.unit-list{display:grid;gap:10px}.small-unit{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;background:#f8fbff;cursor:pointer}.small-unit.active{border-color:var(--blue);background:#eef6ff}.small-unit .num{width:38px;height:38px;font-size:18px}.record-table{width:100%;border-collapse:collapse}.record-table th,.record-table td{border-bottom:1px solid #e5edf7;padding:12px;text-align:left}.hidden{display:none!important}@media(max-width:900px){.app{grid-template-columns:1fr}aside{position:static;height:auto}.home-grid,.study-layout,.choices{grid-template-columns:1fr}main{padding:16px}}
+</style></head><body><div class="app"><aside><div class="brand">🧪 ChemQuest</div><div class="tagline">化学を楽しく、確実に。</div><div class="nav"><button class="active" data-page="home">🏠 ホーム</button><button data-page="study">📝 問題演習</button><button data-page="record">📊 学習記録</button></div><div class="sidebox"><b>習熟度サマリー</b><div class="donut" id="donut"><span id="totalPct">0%</span></div><div class="side-row"><span>化学反応式</span><span id="reactPct">0%</span></div><div class="side-row"><span>量的関係</span><span id="calcPct">0%</span></div><div class="side-row"><span>収録問題</span><span id="totalCount">0問</span></div></div></aside><main><section class="page active" id="home"><div class="hero"><div><h1>ChemQuest｜化学反応式と量的関係</h1><p class="lead">単元を完全分離しました。①は反応式のみ、②は計算のみです。</p></div></div><h2>📚 単元を選択</h2><div class="home-grid"><div class="unit-card active" data-unit="reaction"><div class="num">1</div><h2>化学反応式</h2><p class="lead">物理変化・化学変化、反応物と生成物、係数合わせ、日本語から反応式、イオン反応式。</p><div class="bar"><span id="homeReactBar"></span></div><b>習熟度　<span id="homeReactPct">0%</span></b></div><div class="unit-card calc" data-unit="calc"><div class="num">2</div><h2>量的関係の計算</h2><p class="lead">係数比とmol比、質量、気体体積、モル濃度、過不足、生成量。</p><div class="bar"><span id="homeCalcBar"></span></div><b>習熟度　<span id="homeCalcPct">0%</span></b></div></div></section><section class="page" id="study"><div class="hero"><div><h1><span id="studyTitle">化学反応式</span>｜問題演習</h1><p class="lead"><span id="studyLead">化学反応式</span>の中で練習中。</p></div><button class="secondary" id="homeBtn">ホームへ</button></div><div class="study-layout"><div class="panel"><div class="problem-card"><div class="chips" id="chips"></div><p class="equation" id="equation"></p><p class="prompt" id="prompt"></p></div><div class="choices" id="choices"></div><div class="explain" id="explain">選択肢を選ぶと、この問題専用の解説が表示されます。</div><div class="actions"><button class="secondary" id="prevBtn">前の問題へ</button><button class="primary" id="nextBtn">次のおすすめへ</button><button class="secondary" id="sameBtn">同じ単元でもう1問</button></div></div><div class="panel"><h2>小単元を選ぶ</h2><div class="unit-list" id="unitList"></div></div></div></section><section class="page" id="record"><div class="hero"><div><h1>学習記録</h1><p class="lead">正解した問題数で単元別に保存します。</p></div><button class="secondary" id="resetBtn">記録リセット</button></div><div class="panel"><table class="record-table"><thead><tr><th>単元</th><th>正解</th><th>収録</th><th>習熟度</th></tr></thead><tbody id="recordBody"></tbody></table></div></section></main></div><script>
+const STORAGE_KEY='chemquest-separated-v1';
+const ALL_PROBLEMS=[
   {
     "id": "coef01",
     "stage": "balance",
@@ -896,7 +871,7 @@ const problems=[
     "earns": [
       "balance"
     ],
-    "unit": "intro"
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-proc02",
@@ -920,7 +895,7 @@ const problems=[
     "earns": [
       "balance"
     ],
-    "unit": "intro"
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-methane-step",
@@ -1996,7 +1971,7 @@ const problems=[
   {
     "id": "pdf-101-1",
     "stage": "balance",
-    "category": "過不足",
+    "category": "日本語→反応式",
     "equation": "C2H2 + O2 → CO2 + H2O",
     "prompt": "アセチレンC2H2の完全燃焼を表す反応式はどれ？",
     "choices": [
@@ -2175,7 +2150,7 @@ const problems=[
   {
     "id": "pdf-105-1",
     "stage": "balance",
-    "category": "気体の体積変化",
+    "category": "係数合わせ",
     "equation": "O2 → O3",
     "prompt": "酸素からオゾンが生じる反応式はどれ？",
     "choices": [
@@ -2187,9 +2162,9 @@ const problems=[
     "answer": "3O2 → 2O3",
     "note": "O2とO3の酸素数2と3を、最小公倍数6でそろえます。",
     "steps": [
-      "O2はO2個",
-      "O3はO3個",
-      "3O2 → 2O3"
+      "O2は酸素原子2個",
+      "O3は酸素原子3個",
+      "最小公倍数6にして 3O2 → 2O3"
     ],
     "earns": [
       "balance",
@@ -2737,89 +2712,29 @@ const problems=[
     "unit": "calc"
   }
 ];
-let state=load(); let selectedUnit=state.selectedUnit||"reaction"; let selectedStage=state.selectedStage||"balance"; let current=null; let currentChoices=[]; let history=[]; let answered=false;
-const $=id=>document.getElementById(id);
-function load(){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
-function save(){state.selectedUnit=selectedUnit;state.selectedStage=selectedStage;localStorage.setItem(storageKey,JSON.stringify(state))}
-function initState(){state.cleared=state.cleared||[];state.badges=state.badges||[];state.recent=state.recent||[];state.attempts=state.attempts||{}} initState();
-function unitOfStage(s){return units.find(u=>u.stages.includes(s))?.id||"reaction"}
-function problemUnit(p){return p.unit || unitOfStage(p.stage)}
-function visibleProblems(){return problems.filter(p=>problemUnit(p)==="reaction" || problemUnit(p)==="calc")}
-function unitProblems(unitId){return visibleProblems().filter(p=>problemUnit(p)===unitId)}
-function stageProblems(stageId, unitId=selectedUnit){return visibleProblems().filter(p=>p.stage===stageId && problemUnit(p)===unitId)}
-function stageName(id){return stages.find(s=>s.id===id)?.name||id}
-function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function resetHistory(){history=[]}
-
-function htmlEscape(v){return String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
-function explainFor(p, ok){
-  const ans=htmlEscape(p.answer);
-  const title=ok ? `正解。答えは「${ans}」。` : `答えは「${ans}」。`;
-  const note=htmlEscape(p.note || '正解と問題の条件を対応させて確認します。');
-  const steps=(Array.isArray(p.steps) && p.steps.length) ? p.steps : ['問題の条件を確認する','正解の式・数値と対応させる','左右の原子数や単位を確認する'];
-  return title + '<br>' + note + '<div class="steps">' + steps.map((s,i)=>`<div class="step"><b>${i+1}</b><span>${htmlEscape(s)}</span></div>`).join('') + '</div>';
-}
-
-function star(p){let t=`${p.stage} ${p.category} ${p.prompt}`;let n=/過不足|限量|余る|濃度/.test(t)?4:/g|L|標準状態|分子数|mol\/L/.test(t)?3:/mol比|物質量比/.test(t)?2:1;return "★".repeat(n)+"☆".repeat(5-n)}
-function pct(filterStages=null, unitId=null){let pool=visibleProblems(); if(unitId)pool=pool.filter(p=>problemUnit(p)===unitId); if(filterStages)pool=pool.filter(p=>filterStages.includes(p.stage)); let total=pool.length||1;let c=pool.filter(p=>state.cleared.includes(p.id)).length;return Math.round(c/total*100)}
-function setPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('hidden',p.id!==id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));render()}
-function renderUnits(){$('unitCards').innerHTML=units.map(u=>`<button class="unit-card ${u.id} ${u.id===selectedUnit?'active':''}" data-unit="${u.id}"><div class="unit-num">${u.num}</div><h2>${u.title}</h2><p>${u.desc}</p><div class="bar"><span style="width:${pct(null,u.id)}%"></span></div><p style="margin-top:8px;font-weight:900">習熟度　${pct(null,u.id)}%</p></button>`).join('');document.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>{selectedUnit=b.dataset.unit;selectedStage=units.find(u=>u.id===selectedUnit).stages[0];resetHistory();choose(false);save();render();})}
-function renderStageSelect(){let us=units.find(u=>u.id===selectedUnit).stages;$('stageSelect').innerHTML=us.map(id=>`<option value="${id}" ${id===selectedStage?'selected':''}>${stageName(id)}</option>`).join('')}
-function renderStages(){let us=units.find(u=>u.id===selectedUnit).stages;$('stageList').innerHTML=us.map((id,i)=>{let st=stages.find(s=>s.id===id), pool=stageProblems(id,selectedUnit), count=pool.filter(p=>state.cleared.includes(p.id)).length, total=pool.length;return `<button class="stage ${id===selectedStage?'selected':''}" data-stage="${id}"><b>${i+1}</b><span><strong>${st.name}</strong><small>${st.detail}</small></span><span>${count}/${total}</span></button>`}).join('');document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>{selectedStage=b.dataset.stage;selectedUnit=unitOfStage(selectedStage);resetHistory();choose(false);save();render();})}
-function choose(addHistory=true){
-  let pool=stageProblems(selectedStage, selectedUnit);
-  let fresh=pool.filter(p=>!state.cleared.includes(p.id));
-  let src=fresh.length?fresh:pool;
-  if(addHistory && current){history.push({problem:current, choices:[...currentChoices]}); if(history.length>50)history.shift()}
-  current=src[Math.floor(Math.random()*src.length)];
-  currentChoices=shuffled(current.choices);
-  answered=false;
-}
-function goPrevious(){
-  const prev=history.pop();
-  if(!prev){toast('前の問題はありません');return}
-  current=prev.problem; currentChoices=[...prev.choices]; answered=false;
-  selectedStage=current.stage; selectedUnit=problemUnit(current);
-  save(); render(); renderProblem();
-}
-function renderProblem(){
-  if(!current)choose(false);
-  const p=current;
-  if(!currentChoices.length)currentChoices=shuffled(p.choices);
-  $('practiceTitle').textContent=`${stageName(selectedStage)}｜問題演習`;
-  $('practiceLead').textContent=units.find(u=>u.id===selectedUnit).title+' の中で練習中。';
-  $('tags').innerHTML=`<span class="chip">${units.find(u=>u.id===selectedUnit).title}</span><span class="chip">${p.category}</span><span class="chip stars">${star(p)}</span>`;
-  $('eq').textContent=p.equation;
-  $('prompt').textContent=p.prompt;
-  $('choices').innerHTML=currentChoices.map((c,i)=>`<button class="choice" data-problem-id="${p.id}" data-index="${i}">${htmlEscape(c)}</button>`).join('');
-  $('explain').textContent='選択肢を選ぶと解説が出ます。';
-  $('nextBtn').classList.add('hidden');
-  $('prevBtn').disabled=history.length===0;
-  document.querySelectorAll('[data-index]').forEach(b=>b.onclick=()=>check(b));
-}
-function check(b){
-  if(answered)return;
-  const p=problems.find(x=>x.id===b.dataset.problemId)||current;
-  answered=true;
-  const selected=currentChoices[Number(b.dataset.index)];
-  let ok=selected===p.answer;
-  document.querySelectorAll('.choice').forEach(x=>{
-    const choice=currentChoices[Number(x.dataset.index)];
-    if(choice===p.answer)x.classList.add('correct');
-    if(x===b&&!ok)x.classList.add('wrong');
-  });
-  if(ok){if(!state.cleared.includes(p.id))state.cleared.push(p.id);(p.earns||[]).forEach(id=>{if(!state.badges.includes(id))state.badges.push(id)})}
-  state.recent.unshift({ok,eq:p.equation,stage:p.stage,cat:p.category,at:new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})});
-  state.recent=state.recent.slice(0,10);
-  $('explain').innerHTML=explainFor(p, ok);
-  $('nextBtn').classList.remove('hidden');
-  $('prevBtn').disabled=history.length===0;
-  save();render();
-}
-function renderRecords(){const rows=[...units.find(u=>u.id==="reaction").stages.map(id=>[id,"reaction"]),...units.find(u=>u.id==="calc").stages.map(id=>[id,"calc"])];$('homeRecords').innerHTML=rows.map(([id,unitId])=>`<div style="display:grid;grid-template-columns:150px 1fr 50px;gap:10px;align-items:center;margin:8px 0"><b>${stageName(id)}</b><div class="bar" style="margin:0"><span style="width:${pct([id],unitId)}%"></span></div><b>${pct([id],unitId)}%</b></div>`).join('');$('clearCount').textContent=state.cleared.filter(id=>visibleProblems().some(p=>p.id===id)).length;$('badgeCount').textContent=state.badges.length;$('recentCount').textContent=state.recent.length;$('badges').innerHTML=badges.map(b=>`<span class="badge ${state.badges.includes(b.id)?'on':''}">${state.badges.includes(b.id)?'✓':'○'} ${b.label}</span>`).join('');$('recent').innerHTML=state.recent.length?state.recent.map(r=>`<li><strong>${r.ok?'正解':'確認'}：${r.eq}</strong><br>${stageName(r.stage)}・${r.cat} / ${r.at}</li>`).join(''):'<li>まだ問題を解いていません。</li>'}
-function renderSide(){let total=pct();$('donut').style.setProperty('--p',total);$('totalPercent').textContent=total+'%';$('pReaction').textContent=pct(null,'reaction')+'%';$('pCalc').textContent=pct(null,'calc')+'%';$('qTotal').textContent=visibleProblems().length+'問'}
-function resetAll(){if(!confirm('進捗をリセットしますか？'))return;localStorage.removeItem(storageKey);state={cleared:[],badges:[],recent:[],attempts:{}};selectedUnit='reaction';selectedStage='balance';resetHistory();choose(false);render();toast('進捗をリセットしました')}
-function toast(t){let el=$('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1600)}
-function render(){renderUnits();renderStageSelect();renderStages();renderRecords();renderSide();if(!current)choose()}
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>setPage(b.dataset.page));$('stageSelect').onchange=e=>{selectedStage=e.target.value;selectedUnit=unitOfStage(selectedStage);resetHistory();choose(false);save();render()};$('startBtn').onclick=()=>{resetHistory();choose(false);setPage('practice')};$('backHome').onclick=()=>setPage('home');$('prevBtn').onclick=goPrevious;$('shuffleBtn').onclick=()=>{choose(true);renderProblem()};$('nextBtn').onclick=()=>{choose(true);renderProblem()};$('resetBtn').onclick=resetAll;$('resetBtn2').onclick=resetAll;choose(false);render();renderProblem();
+const UNITS={reaction:{name:'化学反応式',desc:'係数合わせ・反応式づくり・イオン反応式'},calc:{name:'量的関係',desc:'mol比・質量・気体体積・濃度・過不足'}};
+let currentUnit='reaction', currentProblem=null, currentChoices=[], answered=false;
+let history=[];
+let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{"cleared":{},"attempts":{}}');
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function problemsOf(unit){return ALL_PROBLEMS.filter(p=>p.unit===unit);}
+function pct(unit){const ps=problemsOf(unit); const c=ps.filter(p=>state.cleared[p.id]).length; return ps.length?Math.round(c/ps.length*100):0;}
+function shuffle(a){const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]} return b;}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));}
+function normalizeCategory(p){if(p.unit==='reaction'){if(['気体の体積変化','過不足','生成量','化学反応式と量的関係'].includes(p.category))return '係数合わせ';}return p.category;}
+function stars(p){const s=p.stage==='limiting'?3:p.stage==='mass'||p.stage==='gas'||p.stage==='concentration'?2:1;return '★'.repeat(s)+'☆'.repeat(5-s);}
+function renderHome(){let rp=pct('reaction'), cp=pct('calc'), total=ALL_PROBLEMS.length; document.getElementById('homeReactPct').textContent=rp+'%';document.getElementById('homeCalcPct').textContent=cp+'%';document.getElementById('homeReactBar').style.width=rp+'%';document.getElementById('homeCalcBar').style.width=cp+'%';document.getElementById('reactPct').textContent=rp+'%';document.getElementById('calcPct').textContent=cp+'%';document.getElementById('totalCount').textContent=total+'問';let avg=Math.round((rp+cp)/2);document.getElementById('totalPct').textContent=avg+'%';document.getElementById('donut').style.background=`conic-gradient(var(--green) ${avg*3.6}deg,#e5ebf3 0deg)`;}
+function renderUnitList(){const box=document.getElementById('unitList');box.innerHTML='';['reaction','calc'].forEach((u,i)=>{const ps=problemsOf(u), done=ps.filter(p=>state.cleared[p.id]).length; const div=document.createElement('div');div.className='small-unit '+(u===currentUnit?'active':'');div.innerHTML=`<div class="num">${i+1}</div><div><b>${UNITS[u].name}</b><br><span class="lead">${UNITS[u].desc}</span></div><b>${done}/${ps.length}</b>`; div.onclick=()=>{currentUnit=u;history=[];loadProblem();}; box.appendChild(div);});}
+function selectProblem(same=false){const ps=problemsOf(currentUnit); const unseen=ps.filter(p=>!state.cleared[p.id]); const pool=unseen.length?unseen:ps; if(same && currentProblem){const cat=normalizeCategory(currentProblem); const samePool=pool.filter(p=>normalizeCategory(p)===cat&&p.id!==currentProblem.id); if(samePool.length)return samePool[Math.floor(Math.random()*samePool.length)];} return pool[Math.floor(Math.random()*pool.length)];}
+function loadProblem(p=null, fromHistory=false){if(!p)p=selectProblem(); if(currentProblem&&!fromHistory) history.push({problem:currentProblem,choices:currentChoices}); currentProblem=p; currentChoices=fromHistory&&p._choices?p._choices:shuffle(p.choices); answered=false; document.getElementById('studyTitle').textContent=UNITS[currentUnit].name; document.getElementById('studyLead').textContent=UNITS[currentUnit].name; document.getElementById('chips').innerHTML=`<span class="chip">${UNITS[currentUnit].name}</span><span class="chip">${normalizeCategory(p)}</span><span class="chip stars">${stars(p)}</span>`; document.getElementById('equation').textContent=p.equation; document.getElementById('prompt').textContent=p.prompt; const choices=document.getElementById('choices'); choices.innerHTML=''; currentChoices.forEach(c=>{const b=document.createElement('button');b.className='choice';b.textContent=c;b.onclick=()=>answer(c,b);choices.appendChild(b);}); document.getElementById('explain').textContent='選択肢を選ぶと、この問題専用の解説が表示されます。'; document.getElementById('prevBtn').disabled=history.length===0; renderUnitList(); renderHome(); showPage('study');}
+function answer(choice,btn){if(answered)return; answered=true; const p=currentProblem; state.attempts[p.id]=(state.attempts[p.id]||0)+1; document.querySelectorAll('.choice').forEach(b=>{if(b.textContent===p.answer)b.classList.add('correct'); else if(b===btn)b.classList.add('wrong');}); if(choice===p.answer)state.cleared[p.id]=true; save(); const stepHtml=(p.steps||[]).map((s,i)=>`<div class="step"><b>${i+1}</b><span>${s}</span></div>`).join(''); document.getElementById('explain').innerHTML=`<b>答えは「${p.answer}」。</b><br>${p.note||''}<div class="steps">${stepHtml}</div>`; renderHome(); renderUnitList();}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{if(b.dataset.page==='study')loadProblem(currentProblem||selectProblem(),true);else showPage(b.dataset.page);renderHome();renderRecord();});
+document.querySelectorAll('.unit-card').forEach(c=>c.onclick=()=>{currentUnit=c.dataset.unit;history=[];loadProblem();});
+document.getElementById('homeBtn').onclick=()=>showPage('home');
+document.getElementById('nextBtn').onclick=()=>loadProblem();
+document.getElementById('sameBtn').onclick=()=>loadProblem(selectProblem(true));
+document.getElementById('prevBtn').onclick=()=>{const item=history.pop(); if(!item)return; item.problem._choices=item.choices; loadProblem(item.problem,true);};
+document.getElementById('resetBtn').onclick=()=>{if(confirm('学習記録をリセットしますか？')){state={cleared:{},attempts:{}};save();renderHome();renderRecord();}};
+function renderRecord(){const body=document.getElementById('recordBody'); body.innerHTML=''; ['reaction','calc'].forEach(u=>{const ps=problemsOf(u), done=ps.filter(p=>state.cleared[p.id]).length; body.insertAdjacentHTML('beforeend',`<tr><td>${UNITS[u].name}</td><td>${done}</td><td>${ps.length}</td><td>${pct(u)}%</td></tr>`);});}
+renderHome();renderRecord();renderUnitList();
 </script></body></html>
