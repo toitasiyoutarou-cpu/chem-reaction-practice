@@ -22,12 +22,12 @@
 <body>
 <div class="app"><aside><div class="logo">⚗️ ChemQuest</div><div class="tagline">化学を楽しく、確実に。</div><div class="nav"><button class="active" data-page="home">🏠 ホーム</button><button data-page="practice">📝 問題演習</button><button data-page="record">📊 学習記録</button></div><div class="side-card"><strong>習熟度サマリー</strong><div class="donut" id="donut" style="--p:0"><span id="totalPercent">0%</span></div><div class="mini-row"><span>化学反応式</span><b id="pReaction">0%</b></div><div class="mini-row"><span>量的関係</span><b id="pCalc">0%</b></div><div class="mini-row"><span>収録問題</span><b id="qTotal">0問</b></div></div></aside><main>
 <section class="page" id="home"><div class="hero"><div><h1>こんにちは！今日も一緒にがんばろう！</h1><p class="lead">まずは単元を大きく2つに整理しました。「化学反応式」と「量的関係の計算」を分けて学習できます。</p><div class="pillbox"><span class="pill">4択</span><span class="pill">単元別メーター</span><span class="pill">進捗保存</span><span class="pill">全問モード</span></div></div><div class="beaker">🧪</div></div><div class="section-title">📚 単元を選択</div><div class="unit-grid" id="unitCards"></div><div class="setup"><strong>問題を設定</strong><label>小単元 <select id="stageSelect"></select></label><label>問題数 <select id="countSelect"><option>5問</option><option>10問</option><option>全問</option></select></label><button class="primary" id="startBtn">この設定で始める →</button><button class="secondary" id="resetBtn">記録リセット</button></div><div class="panel"><h3>📊 学習記録</h3><div id="homeRecords"></div></div></section>
-<section class="page hidden" id="practice"><div class="hero"><div><h1 id="practiceTitle">問題演習</h1><p class="lead" id="practiceLead">選択肢を押すと、解説と手順が表示されます。</p></div><button class="secondary" id="backHome">ホームへ</button></div><div class="study-grid"><div class="panel"><div class="problem"><div class="chips" id="tags"></div><div class="eq" id="eq"></div><p id="prompt"></p></div><div class="choices" id="choices"></div><div class="explain" id="explain">選択肢を選ぶと解説が出ます。</div><div class="setup"><button class="primary hidden" id="nextBtn">次のおすすめへ</button><button class="secondary" id="shuffleBtn">同じ小単元でもう1問</button></div></div><div class="panel"><h3>小単元を選ぶ</h3><div class="stage-list" id="stageList"></div></div></div></section>
+<section class="page hidden" id="practice"><div class="hero"><div><h1 id="practiceTitle">問題演習</h1><p class="lead" id="practiceLead">選択肢を押すと、解説と手順が表示されます。</p></div><button class="secondary" id="backHome">ホームへ</button></div><div class="study-grid"><div class="panel"><div class="problem"><div class="chips" id="tags"></div><div class="eq" id="eq"></div><p id="prompt"></p></div><div class="choices" id="choices"></div><div class="explain" id="explain">選択肢を選ぶと解説が出ます。</div><div class="setup"><button class="secondary" id="prevBtn">前の問題へ</button><button class="primary hidden" id="nextBtn">次のおすすめへ</button><button class="secondary" id="shuffleBtn">同じ小単元でもう1問</button></div></div><div class="panel"><h3>小単元を選ぶ</h3><div class="stage-list" id="stageList"></div></div></div></section>
 <section class="page hidden" id="record"><div class="hero"><div><h1>学習記録</h1><p class="lead">このブラウザに保存されます。必要ならリセットできます。</p></div><button class="danger" id="resetBtn2">進捗をリセット</button></div><div class="panel"><div class="records"><div class="stat"><b id="clearCount">0</b><span>クリア</span></div><div class="stat"><b id="badgeCount">0</b><span>できた手順</span></div><div class="stat"><b id="recentCount">0</b><span>最近の演習</span></div></div></div><div class="panel"><h3>できた手順</h3><div class="badgegrid" id="badges"></div></div><div class="panel"><h3>最近解いた問題</h3><ul class="list" id="recent"></ul></div></section>
 </main></div><div class="toast" id="toast"></div>
 <script>
 const storageKey="chemquest-reaction-calc-split-v2";
-const units=[{id:"reaction",num:1,title:"化学反応式",desc:"物理変化・化学変化、反応物と生成物、係数合わせ、日本語から反応式、イオン反応式まで。",stages:["balance"]},{id:"calc",num:2,title:"量的関係の計算",desc:"係数比とmol比、質量・気体体積・モル濃度、過不足と生成量まで。",stages:["ratio","mass","gas","concentration","limiting"]}];
+const units=[{id:"reaction",num:1,title:"化学反応式",desc:"係数合わせ、日本語から反応式、燃焼反応式、イオン反応式まで。",stages:["balance"]},{id:"calc",num:2,title:"量的関係の計算",desc:"係数比とmol比、質量・気体体積・モル濃度、過不足と生成量まで。",stages:["ratio","mass","gas","concentration","limiting"]}];
 const stages=[{id:"balance",name:"化学反応式",detail:"係数合わせ・反応式づくり・イオン反応式"},{id:"ratio",name:"係数比とmol比",detail:"係数を物質量比として読む"},{id:"mass",name:"質量から計算",detail:"質量→mol→係数比→答え"},{id:"gas",name:"気体体積から計算",detail:"標準状態22.4L/molを使う"},{id:"concentration",name:"モル濃度から計算",detail:"cVでmolを出す"},{id:"limiting",name:"過不足と生成量",detail:"限量試薬・余る量・発生量"}];
 const badges=[{id:"balance",label:"係数をそろえた"},{id:"atom",label:"原子保存を確認した"},{id:"molratio",label:"係数からmol比を読めた"},{id:"massmol",label:"質量をmolに直せた"},{id:"gasmol",label:"気体体積をmolに直せた"},{id:"concmol",label:"モル濃度からmolを出せた"},{id:"targetmol",label:"目的物質のmolを出せた"},{id:"limiting",label:"限量試薬を判断できた"},{id:"leftover",label:"余る量を求められた"},{id:"yield",label:"生成量を求められた"}];
 const problems=[
@@ -53,7 +53,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef02",
@@ -77,7 +78,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef03",
@@ -101,7 +103,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef04",
@@ -125,7 +128,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef05",
@@ -149,7 +153,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef06",
@@ -173,7 +178,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef07",
@@ -197,7 +203,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef08",
@@ -221,7 +228,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef09",
@@ -245,7 +253,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "coef10",
@@ -269,7 +278,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "jp01",
@@ -293,7 +303,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "jp02",
@@ -317,7 +328,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "jp03",
@@ -341,7 +353,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "jp04",
@@ -365,7 +378,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "jp05",
@@ -389,7 +403,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "jp06",
@@ -413,7 +428,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "jp07",
@@ -437,7 +453,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "ion01",
@@ -461,7 +478,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "ion02",
@@ -485,7 +503,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "tbl01",
@@ -508,7 +527,8 @@ const problems=[
     ],
     "earns": [
       "molratio"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "tbl02",
@@ -532,7 +552,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120301",
@@ -556,7 +577,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120302",
@@ -582,7 +604,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120401",
@@ -606,7 +629,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120402",
@@ -632,7 +656,8 @@ const problems=[
       "molratio",
       "targetmol",
       "gasmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120501",
@@ -657,7 +682,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120502",
@@ -683,7 +709,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120601",
@@ -709,7 +736,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120602",
@@ -735,7 +763,8 @@ const problems=[
       "molratio",
       "targetmol",
       "gasmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120701",
@@ -761,7 +790,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120702",
@@ -787,7 +817,8 @@ const problems=[
       "molratio",
       "targetmol",
       "concmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120801",
@@ -813,7 +844,8 @@ const problems=[
       "concmol",
       "limiting",
       "leftover"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "q120802",
@@ -839,7 +871,8 @@ const problems=[
       "yield",
       "gasmol",
       "molratio"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-p60-proc01",
@@ -862,7 +895,8 @@ const problems=[
     ],
     "earns": [
       "balance"
-    ]
+    ],
+    "unit": "intro"
   },
   {
     "id": "pdf-p60-proc02",
@@ -885,7 +919,8 @@ const problems=[
     ],
     "earns": [
       "balance"
-    ]
+    ],
+    "unit": "intro"
   },
   {
     "id": "pdf-p60-methane-step",
@@ -909,7 +944,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-drill-a2",
@@ -933,7 +969,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-drill-a3",
@@ -957,7 +994,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-comb-c2h4",
@@ -981,7 +1019,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-comb-c2h6",
@@ -1005,7 +1044,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-comb-c2h6o",
@@ -1029,7 +1069,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-c-propane",
@@ -1053,7 +1094,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-c-acetylene",
@@ -1077,7 +1119,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-c-methanol",
@@ -1101,7 +1144,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-p60-table-ch4-o2mol",
@@ -1125,7 +1169,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-p60-table-ch4-vol",
@@ -1150,7 +1195,8 @@ const problems=[
       "gasmol",
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-p61-ex11-1",
@@ -1175,7 +1221,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-p61-ex11-2",
@@ -1200,7 +1247,8 @@ const problems=[
       "gasmol",
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-p61-ex11-3",
@@ -1226,7 +1274,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-p61-ex12-1",
@@ -1252,7 +1301,8 @@ const problems=[
       "molratio",
       "limiting",
       "leftover"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-p61-ex12-2",
@@ -1278,7 +1328,8 @@ const problems=[
       "limiting",
       "gasmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-91-1",
@@ -1302,7 +1353,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-91-3",
@@ -1326,7 +1378,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-92-1",
@@ -1350,7 +1403,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-92-3",
@@ -1374,7 +1428,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-93-1",
@@ -1398,7 +1453,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-93-3",
@@ -1422,7 +1478,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-94-2",
@@ -1446,7 +1503,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-94-4",
@@ -1470,7 +1528,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-94-6",
@@ -1494,7 +1553,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-95-1",
@@ -1518,7 +1578,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-95-3",
@@ -1542,7 +1603,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-96-1",
@@ -1565,7 +1627,8 @@ const problems=[
     ],
     "earns": [
       "massmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-96-2",
@@ -1591,7 +1654,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-96-3",
@@ -1617,7 +1681,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-97-1a",
@@ -1640,7 +1705,8 @@ const problems=[
     ],
     "earns": [
       "massmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-97-1b",
@@ -1665,7 +1731,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-97-2a",
@@ -1690,7 +1757,8 @@ const problems=[
       "molratio",
       "targetmol",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-98-1",
@@ -1714,7 +1782,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-98-2",
@@ -1739,7 +1808,8 @@ const problems=[
       "massmol",
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-98-3",
@@ -1764,7 +1834,8 @@ const problems=[
       "gasmol",
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-99-1",
@@ -1788,7 +1859,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-99-2",
@@ -1813,7 +1885,8 @@ const problems=[
       "massmol",
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-99-3",
@@ -1838,7 +1911,8 @@ const problems=[
       "gasmol",
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-100-1",
@@ -1863,7 +1937,8 @@ const problems=[
       "molratio",
       "limiting",
       "leftover"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-100-2",
@@ -1888,7 +1963,8 @@ const problems=[
       "molratio",
       "limiting",
       "leftover"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-100-3",
@@ -1914,7 +1990,8 @@ const problems=[
       "concmol",
       "limiting",
       "leftover"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-101-1",
@@ -1938,7 +2015,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-101-2",
@@ -1964,7 +2042,8 @@ const problems=[
       "gasmol",
       "limiting",
       "leftover"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-101-3",
@@ -1990,7 +2069,8 @@ const problems=[
       "gasmol",
       "molratio",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-102-1",
@@ -2014,7 +2094,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-102-2",
@@ -2039,7 +2120,8 @@ const problems=[
       "massmol",
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-103-1",
@@ -2062,7 +2144,8 @@ const problems=[
     ],
     "earns": [
       "gasmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-103-2",
@@ -2086,7 +2169,8 @@ const problems=[
     "earns": [
       "molratio",
       "gasmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-105-1",
@@ -2110,7 +2194,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-105-2",
@@ -2134,7 +2219,8 @@ const problems=[
     "earns": [
       "gasmol",
       "molratio"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-107-1",
@@ -2159,7 +2245,8 @@ const problems=[
       "massmol",
       "concmol",
       "molratio"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-107-2",
@@ -2184,7 +2271,8 @@ const problems=[
       "massmol",
       "molratio",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-108-1",
@@ -2209,7 +2297,8 @@ const problems=[
       "massmol",
       "limiting",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-108-2",
@@ -2234,7 +2323,8 @@ const problems=[
       "gasmol",
       "limiting",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-109-1",
@@ -2259,7 +2349,8 @@ const problems=[
       "gasmol",
       "limiting",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-109-2",
@@ -2284,7 +2375,8 @@ const problems=[
       "gasmol",
       "concmol",
       "limiting"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-110-1",
@@ -2309,7 +2401,8 @@ const problems=[
       "gasmol",
       "molratio",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-110-2",
@@ -2334,7 +2427,8 @@ const problems=[
       "gasmol",
       "molratio",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-110-3",
@@ -2359,7 +2453,8 @@ const problems=[
       "gasmol",
       "massmol",
       "molratio"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-111-1",
@@ -2383,7 +2478,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-111-2",
@@ -2408,7 +2504,8 @@ const problems=[
       "gasmol",
       "massmol",
       "limiting"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-112-1",
@@ -2432,7 +2529,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-112-2",
@@ -2457,7 +2555,8 @@ const problems=[
       "gasmol",
       "massmol",
       "molratio"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-112-3",
@@ -2482,7 +2581,8 @@ const problems=[
       "gasmol",
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-113-2",
@@ -2507,7 +2607,8 @@ const problems=[
       "massmol",
       "gasmol",
       "molratio"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-113-6",
@@ -2532,7 +2633,8 @@ const problems=[
       "gasmol",
       "molratio",
       "yield"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-114-1",
@@ -2556,7 +2658,8 @@ const problems=[
     "earns": [
       "balance",
       "atom"
-    ]
+    ],
+    "unit": "reaction"
   },
   {
     "id": "pdf-114-2",
@@ -2580,7 +2683,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-114-3",
@@ -2604,7 +2708,8 @@ const problems=[
     "earns": [
       "molratio",
       "targetmol"
-    ]
+    ],
+    "unit": "calc"
   },
   {
     "id": "pdf-114-4",
@@ -2628,16 +2733,23 @@ const problems=[
     "earns": [
       "molratio",
       "leftover"
-    ]
+    ],
+    "unit": "calc"
   }
 ];
-let state=load(); let selectedUnit=state.selectedUnit||"reaction"; let selectedStage=state.selectedStage||"balance"; let current=null; let answered=false;
+let state=load(); let selectedUnit=state.selectedUnit||"reaction"; let selectedStage=state.selectedStage||"balance"; let current=null; let currentChoices=[]; let history=[]; let answered=false;
 const $=id=>document.getElementById(id);
 function load(){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
 function save(){state.selectedUnit=selectedUnit;state.selectedStage=selectedStage;localStorage.setItem(storageKey,JSON.stringify(state))}
 function initState(){state.cleared=state.cleared||[];state.badges=state.badges||[];state.recent=state.recent||[];state.attempts=state.attempts||{}} initState();
 function unitOfStage(s){return units.find(u=>u.stages.includes(s))?.id||"reaction"}
+function problemUnit(p){return p.unit || unitOfStage(p.stage)}
+function visibleProblems(){return problems.filter(p=>problemUnit(p)==="reaction" || problemUnit(p)==="calc")}
+function unitProblems(unitId){return visibleProblems().filter(p=>problemUnit(p)===unitId)}
+function stageProblems(stageId, unitId=selectedUnit){return visibleProblems().filter(p=>p.stage===stageId && problemUnit(p)===unitId)}
 function stageName(id){return stages.find(s=>s.id===id)?.name||id}
+function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function resetHistory(){history=[]}
 
 function htmlEscape(v){return String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 function explainFor(p, ok){
@@ -2649,18 +2761,65 @@ function explainFor(p, ok){
 }
 
 function star(p){let t=`${p.stage} ${p.category} ${p.prompt}`;let n=/過不足|限量|余る|濃度/.test(t)?4:/g|L|標準状態|分子数|mol\/L/.test(t)?3:/mol比|物質量比/.test(t)?2:1;return "★".repeat(n)+"☆".repeat(5-n)}
-function pct(filterStages=null){let pool=filterStages?problems.filter(p=>filterStages.includes(p.stage)):problems;let total=pool.length||1;let c=pool.filter(p=>state.cleared.includes(p.id)).length;return Math.round(c/total*100)}
+function pct(filterStages=null, unitId=null){let pool=visibleProblems(); if(unitId)pool=pool.filter(p=>problemUnit(p)===unitId); if(filterStages)pool=pool.filter(p=>filterStages.includes(p.stage)); let total=pool.length||1;let c=pool.filter(p=>state.cleared.includes(p.id)).length;return Math.round(c/total*100)}
 function setPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('hidden',p.id!==id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));render()}
-function renderUnits(){$('unitCards').innerHTML=units.map(u=>`<button class="unit-card ${u.id} ${u.id===selectedUnit?'active':''}" data-unit="${u.id}"><div class="unit-num">${u.num}</div><h2>${u.title}</h2><p>${u.desc}</p><div class="bar"><span style="width:${pct(u.stages)}%"></span></div><p style="margin-top:8px;font-weight:900">習熟度　${pct(u.stages)}%</p></button>`).join('');document.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>{selectedUnit=b.dataset.unit;selectedStage=units.find(u=>u.id===selectedUnit).stages[0];choose();save();render();})}
+function renderUnits(){$('unitCards').innerHTML=units.map(u=>`<button class="unit-card ${u.id} ${u.id===selectedUnit?'active':''}" data-unit="${u.id}"><div class="unit-num">${u.num}</div><h2>${u.title}</h2><p>${u.desc}</p><div class="bar"><span style="width:${pct(null,u.id)}%"></span></div><p style="margin-top:8px;font-weight:900">習熟度　${pct(null,u.id)}%</p></button>`).join('');document.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>{selectedUnit=b.dataset.unit;selectedStage=units.find(u=>u.id===selectedUnit).stages[0];resetHistory();choose(false);save();render();})}
 function renderStageSelect(){let us=units.find(u=>u.id===selectedUnit).stages;$('stageSelect').innerHTML=us.map(id=>`<option value="${id}" ${id===selectedStage?'selected':''}>${stageName(id)}</option>`).join('')}
-function renderStages(){let us=units.find(u=>u.id===selectedUnit).stages;$('stageList').innerHTML=us.map((id,i)=>{let st=stages.find(s=>s.id===id), count=problems.filter(p=>p.stage===id&&state.cleared.includes(p.id)).length, total=problems.filter(p=>p.stage===id).length;return `<button class="stage ${id===selectedStage?'selected':''}" data-stage="${id}"><b>${i+1}</b><span><strong>${st.name}</strong><small>${st.detail}</small></span><span>${count}/${total}</span></button>`}).join('');document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>{selectedStage=b.dataset.stage;selectedUnit=unitOfStage(selectedStage);choose();save();render();})}
-function choose(){let pool=problems.filter(p=>p.stage===selectedStage);let fresh=pool.filter(p=>!state.cleared.includes(p.id));let src=fresh.length?fresh:pool;current=src[Math.floor(Math.random()*src.length)];answered=false}
-function renderProblem(){if(!current)choose();const p=current;$('practiceTitle').textContent=`${stageName(selectedStage)}｜問題演習`;$('practiceLead').textContent=units.find(u=>u.id===selectedUnit).title+' の中で練習中。';$('tags').innerHTML=`<span class="chip">${units.find(u=>u.id===selectedUnit).title}</span><span class="chip">${p.category}</span><span class="chip stars">${star(p)}</span>`;$('eq').textContent=p.equation;$('prompt').textContent=p.prompt;$('choices').innerHTML=p.choices.map(c=>`<button class="choice" data-problem-id="${p.id}" data-choice="${htmlEscape(c)}">${htmlEscape(c)}</button>`).join('');$('explain').textContent='選択肢を選ぶと解説が出ます。';$('nextBtn').classList.add('hidden');document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>check(b))}
-function check(b){if(answered)return;const p=problems.find(x=>x.id===b.dataset.problemId)||current;answered=true;let ok=b.dataset.choice===p.answer;document.querySelectorAll('.choice').forEach(x=>{if(x.dataset.choice===p.answer)x.classList.add('correct');if(x===b&&!ok)x.classList.add('wrong')});if(ok){if(!state.cleared.includes(p.id))state.cleared.push(p.id);(p.earns||[]).forEach(id=>{if(!state.badges.includes(id))state.badges.push(id)})}state.recent.unshift({ok,eq:p.equation,stage:p.stage,cat:p.category,at:new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})});state.recent=state.recent.slice(0,10);$('explain').innerHTML=explainFor(p, ok);$('nextBtn').classList.remove('hidden');save();render()}
-function renderRecords(){$('homeRecords').innerHTML=stages.map(s=>`<div style="display:grid;grid-template-columns:150px 1fr 50px;gap:10px;align-items:center;margin:8px 0"><b>${s.name}</b><div class="bar" style="margin:0"><span style="width:${pct([s.id])}%"></span></div><b>${pct([s.id])}%</b></div>`).join('');$('clearCount').textContent=state.cleared.length;$('badgeCount').textContent=state.badges.length;$('recentCount').textContent=state.recent.length;$('badges').innerHTML=badges.map(b=>`<span class="badge ${state.badges.includes(b.id)?'on':''}">${state.badges.includes(b.id)?'✓':'○'} ${b.label}</span>`).join('');$('recent').innerHTML=state.recent.length?state.recent.map(r=>`<li><strong>${r.ok?'正解':'確認'}：${r.eq}</strong><br>${stageName(r.stage)}・${r.cat} / ${r.at}</li>`).join(''):'<li>まだ問題を解いていません。</li>'}
-function renderSide(){let total=pct();$('donut').style.setProperty('--p',total);$('totalPercent').textContent=total+'%';$('pReaction').textContent=pct(['balance'])+'%';$('pCalc').textContent=pct(['ratio','mass','gas','concentration','limiting'])+'%';$('qTotal').textContent=problems.length+'問'}
-function resetAll(){if(!confirm('進捗をリセットしますか？'))return;localStorage.removeItem(storageKey);state={cleared:[],badges:[],recent:[],attempts:{}};selectedUnit='reaction';selectedStage='balance';choose();render();toast('進捗をリセットしました')}
+function renderStages(){let us=units.find(u=>u.id===selectedUnit).stages;$('stageList').innerHTML=us.map((id,i)=>{let st=stages.find(s=>s.id===id), pool=stageProblems(id,selectedUnit), count=pool.filter(p=>state.cleared.includes(p.id)).length, total=pool.length;return `<button class="stage ${id===selectedStage?'selected':''}" data-stage="${id}"><b>${i+1}</b><span><strong>${st.name}</strong><small>${st.detail}</small></span><span>${count}/${total}</span></button>`}).join('');document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>{selectedStage=b.dataset.stage;selectedUnit=unitOfStage(selectedStage);resetHistory();choose(false);save();render();})}
+function choose(addHistory=true){
+  let pool=stageProblems(selectedStage, selectedUnit);
+  let fresh=pool.filter(p=>!state.cleared.includes(p.id));
+  let src=fresh.length?fresh:pool;
+  if(addHistory && current){history.push({problem:current, choices:[...currentChoices]}); if(history.length>50)history.shift()}
+  current=src[Math.floor(Math.random()*src.length)];
+  currentChoices=shuffled(current.choices);
+  answered=false;
+}
+function goPrevious(){
+  const prev=history.pop();
+  if(!prev){toast('前の問題はありません');return}
+  current=prev.problem; currentChoices=[...prev.choices]; answered=false;
+  selectedStage=current.stage; selectedUnit=problemUnit(current);
+  save(); render(); renderProblem();
+}
+function renderProblem(){
+  if(!current)choose(false);
+  const p=current;
+  if(!currentChoices.length)currentChoices=shuffled(p.choices);
+  $('practiceTitle').textContent=`${stageName(selectedStage)}｜問題演習`;
+  $('practiceLead').textContent=units.find(u=>u.id===selectedUnit).title+' の中で練習中。';
+  $('tags').innerHTML=`<span class="chip">${units.find(u=>u.id===selectedUnit).title}</span><span class="chip">${p.category}</span><span class="chip stars">${star(p)}</span>`;
+  $('eq').textContent=p.equation;
+  $('prompt').textContent=p.prompt;
+  $('choices').innerHTML=currentChoices.map((c,i)=>`<button class="choice" data-problem-id="${p.id}" data-index="${i}">${htmlEscape(c)}</button>`).join('');
+  $('explain').textContent='選択肢を選ぶと解説が出ます。';
+  $('nextBtn').classList.add('hidden');
+  $('prevBtn').disabled=history.length===0;
+  document.querySelectorAll('[data-index]').forEach(b=>b.onclick=()=>check(b));
+}
+function check(b){
+  if(answered)return;
+  const p=problems.find(x=>x.id===b.dataset.problemId)||current;
+  answered=true;
+  const selected=currentChoices[Number(b.dataset.index)];
+  let ok=selected===p.answer;
+  document.querySelectorAll('.choice').forEach(x=>{
+    const choice=currentChoices[Number(x.dataset.index)];
+    if(choice===p.answer)x.classList.add('correct');
+    if(x===b&&!ok)x.classList.add('wrong');
+  });
+  if(ok){if(!state.cleared.includes(p.id))state.cleared.push(p.id);(p.earns||[]).forEach(id=>{if(!state.badges.includes(id))state.badges.push(id)})}
+  state.recent.unshift({ok,eq:p.equation,stage:p.stage,cat:p.category,at:new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})});
+  state.recent=state.recent.slice(0,10);
+  $('explain').innerHTML=explainFor(p, ok);
+  $('nextBtn').classList.remove('hidden');
+  $('prevBtn').disabled=history.length===0;
+  save();render();
+}
+function renderRecords(){const rows=[...units.find(u=>u.id==="reaction").stages.map(id=>[id,"reaction"]),...units.find(u=>u.id==="calc").stages.map(id=>[id,"calc"])];$('homeRecords').innerHTML=rows.map(([id,unitId])=>`<div style="display:grid;grid-template-columns:150px 1fr 50px;gap:10px;align-items:center;margin:8px 0"><b>${stageName(id)}</b><div class="bar" style="margin:0"><span style="width:${pct([id],unitId)}%"></span></div><b>${pct([id],unitId)}%</b></div>`).join('');$('clearCount').textContent=state.cleared.filter(id=>visibleProblems().some(p=>p.id===id)).length;$('badgeCount').textContent=state.badges.length;$('recentCount').textContent=state.recent.length;$('badges').innerHTML=badges.map(b=>`<span class="badge ${state.badges.includes(b.id)?'on':''}">${state.badges.includes(b.id)?'✓':'○'} ${b.label}</span>`).join('');$('recent').innerHTML=state.recent.length?state.recent.map(r=>`<li><strong>${r.ok?'正解':'確認'}：${r.eq}</strong><br>${stageName(r.stage)}・${r.cat} / ${r.at}</li>`).join(''):'<li>まだ問題を解いていません。</li>'}
+function renderSide(){let total=pct();$('donut').style.setProperty('--p',total);$('totalPercent').textContent=total+'%';$('pReaction').textContent=pct(null,'reaction')+'%';$('pCalc').textContent=pct(null,'calc')+'%';$('qTotal').textContent=visibleProblems().length+'問'}
+function resetAll(){if(!confirm('進捗をリセットしますか？'))return;localStorage.removeItem(storageKey);state={cleared:[],badges:[],recent:[],attempts:{}};selectedUnit='reaction';selectedStage='balance';resetHistory();choose(false);render();toast('進捗をリセットしました')}
 function toast(t){let el=$('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1600)}
 function render(){renderUnits();renderStageSelect();renderStages();renderRecords();renderSide();if(!current)choose()}
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>setPage(b.dataset.page));$('stageSelect').onchange=e=>{selectedStage=e.target.value;selectedUnit=unitOfStage(selectedStage);choose();save();render()};$('startBtn').onclick=()=>{choose();setPage('practice')};$('backHome').onclick=()=>setPage('home');$('shuffleBtn').onclick=()=>{choose();renderProblem()};$('nextBtn').onclick=()=>{choose();renderProblem()};$('resetBtn').onclick=resetAll;$('resetBtn2').onclick=resetAll;choose();render();renderProblem();
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>setPage(b.dataset.page));$('stageSelect').onchange=e=>{selectedStage=e.target.value;selectedUnit=unitOfStage(selectedStage);resetHistory();choose(false);save();render()};$('startBtn').onclick=()=>{resetHistory();choose(false);setPage('practice')};$('backHome').onclick=()=>setPage('home');$('prevBtn').onclick=goPrevious;$('shuffleBtn').onclick=()=>{choose(true);renderProblem()};$('nextBtn').onclick=()=>{choose(true);renderProblem()};$('resetBtn').onclick=resetAll;$('resetBtn2').onclick=resetAll;choose(false);render();renderProblem();
 </script></body></html>
